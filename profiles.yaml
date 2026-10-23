@@ -1,0 +1,25 @@
+# System profiles used in the paper (journal version, Section 3.2 and Table 2).
+# All values are ASSUMED parameters from the paper, not measurements.
+# Common to all chain profiles: failure p = 0.08, R = 1 retry,
+# LLM pool k_L = 8, E[S_L] = 3.0 s, CV 0.9; tool E[S_T] = 1.0 s, CV 1.5.
+
+profiles:
+  P1:  # deep and narrow (ReAct-like)
+    workflow: {mean_steps: 8, fanout_kind: poisson, fanout: 1.0, failure_prob: 0.08, max_retries: 1}
+    llm: {servers: 8, mean_service: 3.0, cv: 0.9}
+    tool: {servers: 16, mean_service: 1.0, cv: 1.5}
+
+  P2:  # wide and shallow (planner-worker-like)
+    workflow: {mean_steps: 4, fanout_kind: fixed, fanout: 6, failure_prob: 0.08, max_retries: 1}
+    llm: {servers: 8, mean_service: 3.0, cv: 0.9}
+    tool: {servers: 32, mean_service: 1.0, cv: 1.5}
+
+  P3:  # balanced
+    workflow: {mean_steps: 5, fanout_kind: poisson, fanout: 2.0, failure_prob: 0.08, max_retries: 1}
+    llm: {servers: 8, mean_service: 3.0, cv: 0.9}
+    tool: {servers: 16, mean_service: 1.0, cv: 1.5}
+
+  TREE:  # chain used inside sub-agent trees (Section 7, Table 7)
+    workflow: {mean_steps: 3, fanout_kind: poisson, fanout: 2.0, failure_prob: 0.08, max_retries: 1}
+    llm: {servers: 8, mean_service: 3.0, cv: 0.9}
+    tool: {servers: 16, mean_service: 1.0, cv: 1.5}

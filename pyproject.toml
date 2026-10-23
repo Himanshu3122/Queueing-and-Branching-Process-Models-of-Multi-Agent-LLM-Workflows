@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentq"
+version = "1.0.0"
+description = "Queueing and branching-process performance models for multi-agent LLM workflows: latency percentiles, success probability and cost from workflow structure."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "agentq authors" }]
+keywords = ["queueing", "performance modeling", "LLM agents", "fork-join", "branching processes", "capacity planning"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Scientific/Engineering",
+  "Intended Audience :: Science/Research",
+]
+dependencies = [
+  "numpy>=1.26",
+  "scipy>=1.11",
+  "pydantic>=2.5",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+api = ["starlette>=0.36", "uvicorn>=0.27"]
+dev = ["pytest>=7.4", "ruff>=0.4"]
+
+[project.scripts]
+agentq = "agentq.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["agentq", "tests"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["B011"]

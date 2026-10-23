@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper and this repository."
+title: "agentq: Queueing and Branching-Process Models of Multi-Agent LLM Workflows"
+version: 1.0.0
+date-released: 2026-10-23
+license: MIT
+authors:
+  - name: "agentq authors"
+preferred-citation:
+  type: article
+  title: "Queueing and Branching-Process Models of Multi-Agent LLM Workflows: Latency, Failure, and Cost Prediction from Workflow Structure"
+  authors:
+    - name: "Author Name (replace with the paper's authors)"
+  year: 2026
+  notes: "Manuscript; venue and authors to be completed by the paper's authors."

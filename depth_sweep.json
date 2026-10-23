@@ -1,0 +1,124 @@
+{
+ "experiment": "depth_sweep",
+ "mode": "full",
+ "created_utc": "2026-10-23T14:30:10+00:00",
+ "elapsed_seconds": 1.28,
+ "params": {
+  "grid": {
+   "dt": 0.02,
+   "n": 30000
+  },
+  "rate": 0.1,
+  "mean_steps": [
+   2,
+   4,
+   6,
+   8,
+   12,
+   16
+  ]
+ },
+ "environment": {
+  "agentq": "1.0.0",
+  "python": "3.13.17",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "platform": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+  "processor": "x86_64"
+ },
+ "provenance": "reproduced locally with agentq (not the paper's original output files)",
+ "results": {
+  "rows": [
+   {
+    "mean_steps": 2,
+    "stable": true,
+    "rho_llm": 0.08048489666136727,
+    "rho_tool": 0.02682829888712242,
+    "success_prob": 0.9872813990461049,
+    "llm_calls_per_task": 2.1462639109697936,
+    "calls_per_success": 2.173913043478261,
+    "started_steps": 1.987281399046105,
+    "mean": 9.392615834164266,
+    "p50": 6.8,
+    "p95": 26.04,
+    "p99": 40.04,
+    "horizon_tail_mass": 7.466794139943972e-14
+   },
+   {
+    "mean_steps": 4,
+    "stable": true,
+    "rho_llm": 0.15894819466248045,
+    "rho_tool": 0.052982731554160147,
+    "success_prob": 0.9748822605965467,
+    "llm_calls_per_task": 4.238618524332812,
+    "calls_per_success": 4.3478260869565215,
+    "started_steps": 3.92464678178964,
+    "mean": 18.54940575318245,
+    "p50": 13.1,
+    "p95": 53.64,
+    "p99": 82.16,
+    "horizon_tail_mass": 1.6866914124340403e-13
+   },
+   {
+    "mean_steps": 6,
+    "stable": true,
+    "rho_llm": 0.2354651162790699,
+    "rho_tool": 0.0784883720930233,
+    "success_prob": 0.9627906976744189,
+    "llm_calls_per_task": 6.279069767441864,
+    "calls_per_success": 6.521739130434784,
+    "started_steps": 5.813953488372095,
+    "mean": 27.48092314762515,
+    "p50": 19.28,
+    "p95": 80.42,
+    "p99": 123.24000000000001,
+    "horizon_tail_mass": 3.469085372131744e-13
+   },
+   {
+    "mean_steps": 8,
+    "stable": true,
+    "rho_llm": 0.3101071975497705,
+    "rho_tool": 0.1033690658499235,
+    "success_prob": 0.9509954058192961,
+    "llm_calls_per_task": 8.26952526799388,
+    "calls_per_success": 8.695652173913043,
+    "started_steps": 7.6569678407350725,
+    "mean": 36.20188016750565,
+    "p50": 25.34,
+    "p95": 106.56,
+    "p99": 163.34,
+    "horizon_tail_mass": 7.606405022441743e-13
+   },
+   {
+    "mean_steps": 12,
+    "stable": true,
+    "rho_llm": 0.4540358744394622,
+    "rho_tool": 0.15134529147982073,
+    "success_prob": 0.9282511210762338,
+    "llm_calls_per_task": 12.107623318385658,
+    "calls_per_success": 13.043478260869565,
+    "started_steps": 11.210762331838572,
+    "mean": 53.0418025496893,
+    "p50": 37.14,
+    "p95": 157.06,
+    "p99": 238.96,
+    "horizon_tail_mass": 3.746669856073638e-12
+   },
+   {
+    "mean_steps": 16,
+    "stable": true,
+    "rho_llm": 0.5912408759124087,
+    "rho_tool": 0.1970802919708029,
+    "success_prob": 0.9065693430656934,
+    "llm_calls_per_task": 15.766423357664232,
+    "calls_per_success": 17.391304347826086,
+    "started_steps": 14.5985401459854,
+    "mean": 69.36662486060955,
+    "p50": 49.06,
+    "p95": 205.38,
+    "p99": 301.6,
+    "horizon_tail_mass": 1.2999009773446301e-11
+   }
+  ]
+ }
+}

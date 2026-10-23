@@ -1,0 +1,170 @@
+{
+ "experiment": "retries_cost",
+ "mode": "full",
+ "created_utc": "2026-10-23T14:30:19+00:00",
+ "elapsed_seconds": 1.53,
+ "params": {
+  "grid": {
+   "dt": 0.02,
+   "n": 30000
+  },
+  "seed": 2,
+  "mean_steps": 5,
+  "retries": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "failure_probs": [
+   0.05,
+   0.1,
+   0.2,
+   0.3
+  ],
+  "n_tasks": 200000
+ },
+ "environment": {
+  "agentq": "1.0.0",
+  "python": "3.13.17",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "platform": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+  "processor": "x86_64"
+ },
+ "provenance": "reproduced locally with agentq (not the paper's original output files)",
+ "results": {
+  "rows": [
+   {
+    "R": 0,
+    "p": 0.05,
+    "Ps_eq": 0.7916666666666667,
+    "Ps_sim": 0.791515,
+    "calls_per_success_eq": 5.263157894736842,
+    "calls_per_success_sim": 5.261669077654878
+   },
+   {
+    "R": 0,
+    "p": 0.1,
+    "Ps_eq": 0.6428571428571431,
+    "Ps_sim": 0.642925,
+    "calls_per_success_eq": 5.5555555555555545,
+    "calls_per_success_sim": 5.537216627133803
+   },
+   {
+    "R": 0,
+    "p": 0.2,
+    "Ps_eq": 0.44444444444444464,
+    "Ps_sim": 0.444965,
+    "calls_per_success_eq": 6.249999999999999,
+    "calls_per_success_sim": 6.237389457597788
+   },
+   {
+    "R": 0,
+    "p": 0.3,
+    "Ps_eq": 0.3181818181818181,
+    "Ps_sim": 0.31824,
+    "calls_per_success_eq": 7.142857142857143,
+    "calls_per_success_sim": 7.1304989944695825
+   },
+   {
+    "R": 1,
+    "p": 0.05,
+    "Ps_eq": 0.9876237623762378,
+    "Ps_sim": 0.987725,
+    "calls_per_success_eq": 5.2631578947368425,
+    "calls_per_success_sim": 5.2618846338808885
+   },
+   {
+    "R": 1,
+    "p": 0.1,
+    "Ps_eq": 0.9519230769230771,
+    "Ps_sim": 0.951475,
+    "calls_per_success_eq": 5.5555555555555545,
+    "calls_per_success_sim": 5.559620589085368
+   },
+   {
+    "R": 1,
+    "p": 0.2,
+    "Ps_eq": 0.8275862068965518,
+    "Ps_sim": 0.82895,
+    "calls_per_success_eq": 6.249999999999999,
+    "calls_per_success_sim": 6.254014114240907
+   },
+   {
+    "R": 1,
+    "p": 0.3,
+    "Ps_eq": 0.6691176470588238,
+    "Ps_sim": 0.668645,
+    "calls_per_success_eq": 7.142857142857142,
+    "calls_per_success_sim": 7.15623387597305
+   },
+   {
+    "R": 2,
+    "p": 0.05,
+    "Ps_eq": 0.9993753123438285,
+    "Ps_sim": 0.99935,
+    "calls_per_success_eq": 5.263157894736842,
+    "calls_per_success_sim": 5.269600240156101
+   },
+   {
+    "R": 2,
+    "p": 0.1,
+    "Ps_eq": 0.9950199203187253,
+    "Ps_sim": 0.99505,
+    "calls_per_success_eq": 5.5555555555555545,
+    "calls_per_success_sim": 5.571991357218231
+   },
+   {
+    "R": 2,
+    "p": 0.2,
+    "Ps_eq": 0.96124031007752,
+    "Ps_sim": 0.96053,
+    "calls_per_success_eq": 6.249999999999999,
+    "calls_per_success_sim": 6.238201826075188
+   },
+   {
+    "R": 2,
+    "p": 0.3,
+    "Ps_eq": 0.8781588447653428,
+    "Ps_sim": 0.878085,
+    "calls_per_success_eq": 7.142857142857143,
+    "calls_per_success_sim": 7.148442348975327
+   },
+   {
+    "R": 3,
+    "p": 0.05,
+    "Ps_eq": 0.9999687507812305,
+    "Ps_sim": 0.999995,
+    "calls_per_success_eq": 5.263157894736843,
+    "calls_per_success_sim": 5.261661308306541
+   },
+   {
+    "R": 3,
+    "p": 0.1,
+    "Ps_eq": 0.9995001999200324,
+    "Ps_sim": 0.999495,
+    "calls_per_success_eq": 5.555555555555555,
+    "calls_per_success_sim": 5.56762164893271
+   },
+   {
+    "R": 3,
+    "p": 0.2,
+    "Ps_eq": 0.9920508744038155,
+    "Ps_sim": 0.991935,
+    "calls_per_success_eq": 6.249999999999999,
+    "calls_per_success_sim": 6.286641765841512
+   },
+   {
+    "R": 3,
+    "p": 0.3,
+    "Ps_eq": 0.9607710189848897,
+    "Ps_sim": 0.959865,
+    "calls_per_success_eq": 7.142857142857142,
+    "calls_per_success_sim": 7.155381225484834
+   }
+  ],
+  "max_abs_Ps_error": 0.001363793103448141,
+  "max_rel_cost_error": 0.005828511820190951
+ }
+}

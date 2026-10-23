@@ -1,0 +1,7 @@
+# Runtime dependencies, pinned to the versions the test suite was run with (Python 3.13).
+# The paper's original results were produced with numpy 2.4.4 / scipy 1.17.1; seeded simulator
+# outputs reproduced bit-for-bit under numpy 2.5.3 (see SMOKE_TEST_REPORT.md).
+numpy==2.5.3
+scipy==1.18.1
+pydantic==2.13.5
+PyYAML==6.0.3
