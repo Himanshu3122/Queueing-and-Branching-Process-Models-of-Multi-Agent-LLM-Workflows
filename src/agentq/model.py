@@ -29,16 +29,37 @@ class ModelOptions:
             maximum over ``K`` ("No fork-join" ablation).
         ca2: Squared coefficient of variation of arrivals at each pool (``c_a^2``, Eq. (12)).
         service_dist: ``lognormal`` (paper) or ``exponential`` (true M/M/k service).
+        tool_ca2: ``c_a^2`` at the tool pool only, overriding ``ca2`` there. ``"batch"`` uses
+            ``E[K^2]/E[K]``, the index of dispersion of a compound-Poisson stream whose batches
+            are the forks (siblings arrive together), instead of Poisson arrivals.
         max_steps: Truncation ``n_max`` of the step-count mixture (paper: 80).
+        step_tail_tol: If set, ``n_max`` is raised until the dropped success-tilted step-count
+            mass ``((1-q) s)^{n_max}`` is below this tolerance (the paper's truncation at 80
+            loses about 3e-3 of the mass at ``n_bar = 16``, biasing p99 down).
+        fold_tail: Fold mass beyond the grid horizon into the last bin instead of dropping it
+            and renormalizing (see :func:`agentq.grid.convolve`).
         grid: Discretization grid (paper: dt = 0.02 s, 30,000 points).
     """
 
     use_queueing: bool = True
     use_fork_join: bool = True
     ca2: float = 1.0
+    tool_ca2: float | str | None = None
     service_dist: ServiceDist = "lognormal"
     max_steps: int = 80
+    step_tail_tol: float | None = None
+    fold_tail: bool = False
     grid: Grid = field(default_factory=Grid)
+
+    def steps_needed(self, ratio: float) -> int:
+        """``n_max`` for a geometric step-count tail ``ratio^n`` (``ratio = (1-q) s``)."""
+        if self.step_tail_tol is None or ratio <= 0.0:
+            return self.max_steps
+        return max(self.max_steps, int(np.ceil(np.log(self.step_tail_tol) / np.log(ratio))))
+
+
+REVISED_OPTIONS = {"step_tail_tol": 1e-10, "fold_tail": True}
+"""Numerical settings of the revised manuscript (no step truncation bias, no horizon loss)."""
 
 
 @dataclass
@@ -80,15 +101,20 @@ def _join_pmf(tool_response: FloatArray, fanout: float, kind: str) -> FloatArray
     return pmf_from_cdf_values(joined)
 
 
-def _mixture_of_powers(base: FloatArray, weights: FloatArray) -> FloatArray:
+def _mixture_of_powers(base: FloatArray, weights: FloatArray, fold_tail: bool = False) -> FloatArray:
     """``sum_i weights[i] * base^{*(i+1)}`` using repeated convolution."""
     out = np.zeros_like(base)
     cur = base.copy()
     for i, w in enumerate(weights):
         out += w * cur
         if i < len(weights) - 1:
-            cur = convolve(cur, base)
+            cur = convolve(cur, base, fold_tail)
     return out
+
+
+def tool_arrival_scv(fanout: float, kind: str) -> float:
+    """``E[K^2]/E[K]`` for fixed (``K``) or Poisson (``1 + mu_K``) fan-out."""
+    return fanout if kind == "fixed" else 1.0 + fanout
 
 
 def chain_prediction(
@@ -131,6 +157,13 @@ def chain_prediction(
     exp_service = opts.service_dist == "exponential"
     cv_l = 1.0 if exp_service else system.llm.cv
     cv_t = 1.0 if exp_service else system.tool.cv
+    if opts.tool_ca2 == "batch":
+        ca2_t = tool_arrival_scv(wf.fanout, wf.fanout_kind)
+    elif opts.tool_ca2 is not None:
+        ca2_t = float(opts.tool_ca2)
+    else:
+        ca2_t = opts.ca2
+    fold = opts.fold_tail
     if opts.use_queueing:
         r_l = response_pmf(
             loads.llm_arrival_rate, system.llm.mean_service, cv_l, system.llm.servers, grid, opts.ca2, opts.service_dist
@@ -141,7 +174,7 @@ def chain_prediction(
             cv_t,
             system.tool.servers,
             grid,
-            opts.ca2,
+            ca2_t,
             opts.service_dist,
         )
         if r_l is None or r_t is None:  # pragma: no cover - excluded by the stability check above
@@ -154,20 +187,20 @@ def chain_prediction(
     if wf.fanout == 0:
         attempt = r_l
     elif opts.use_fork_join:
-        attempt = convolve(r_l, _join_pmf(r_t, wf.fanout, wf.fanout_kind))
+        attempt = convolve(r_l, _join_pmf(r_t, wf.fanout, wf.fanout_kind), fold)
     else:
-        attempt = convolve(r_l, r_t)
+        attempt = convolve(r_l, r_t, fold)
 
     p, r = wf.failure_prob, wf.max_retries
     w_att = np.array([p**i * (1.0 - p) for i in range(r + 1)])
     w_att /= w_att.sum()
-    step = _mixture_of_powers(attempt, w_att)
+    step = _mixture_of_powers(attempt, w_att, fold)
 
     q, s = wf.q, sq.step_success
-    n = np.arange(1, opts.max_steps + 1)
+    n = np.arange(1, opts.steps_needed((1.0 - q) * s) + 1)
     w_steps = q * (1.0 - q) ** (n - 1) * s**n
     w_steps /= w_steps.sum()
-    task = _mixture_of_powers(step, w_steps)
+    task = _mixture_of_powers(step, w_steps, fold)
 
     stats = summarize(task, grid)
     pred.mean, pred.p50, pred.p95, pred.p99 = stats["mean"], stats["p50"], stats["p95"], stats["p99"]

@@ -1,0 +1,92 @@
+{
+ "experiment": "cv_runlength",
+ "mode": "full",
+ "created_utc": "2026-10-23T19:04:06+00:00",
+ "elapsed_seconds": 69.68,
+ "params": {
+  "grid": {
+   "dt": 0.02,
+   "n": 30000
+  },
+  "rho_llm": 0.8,
+  "model": {
+   "step_tail_tol": 1e-10,
+   "fold_tail": true
+  },
+  "llm_cv": [
+   2.5
+  ],
+  "n_tasks": 120000,
+  "seeds": 8
+ },
+ "environment": {
+  "agentq": "1.0.0",
+  "python": "3.15.1",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 181 Stepping 0, GenuineIntel"
+ },
+ "provenance": "reproduced locally with agentq (not the paper's original output files)",
+ "results": {
+  "rows": [
+   {
+    "llm_cv": 2.5,
+    "rate": 0.40517530864197526,
+    "model": {
+     "stable": true,
+     "rho_llm": 0.8000000000000002,
+     "rho_tool": 0.2666666666666667,
+     "success_prob": 0.9687987519500783,
+     "llm_calls_per_task": 5.265210608424338,
+     "calls_per_success": 5.434782608695652,
+     "started_steps": 4.875195007800313,
+     "mean": 39.31745922662136,
+     "p50": 26.26,
+     "p95": 120.86,
+     "p99": 191.6,
+     "horizon_tail_mass": 2.5483230055230054e-05
+    },
+    "sim": {
+     "mean": [
+      29.48332054808995,
+      0.3866183474643614
+     ],
+     "p50": [
+      18.093746450252638,
+      0.21029625562419008
+     ],
+     "p95": [
+      95.15425785850115,
+      1.3868391598495209
+     ],
+     "p99": [
+      163.5337749207547,
+      3.1815406054193933
+     ],
+     "success_prob": [
+      0.9685979029160121,
+      0.00034886405723836726
+     ],
+     "llm_calls_per_task": [
+      5.2654635416666675,
+      0.0076496593584037195
+     ],
+     "rho_llm": [
+      0.8014725339906006,
+      0.0035837033179766603
+     ],
+     "rho_tool": [
+      0.2671299703893892,
+      0.0010413659812528412
+     ]
+    },
+    "error": {
+     "mean": 0.33354922361920014,
+     "p95": 0.2701481018298151,
+     "p99": 0.17162341597535824
+    }
+   }
+  ]
+ }
+}

@@ -94,3 +94,48 @@ experiments:
   runtime:                         # Section 7.9 text (hardware-dependent)
     full: {model_reps: 5, n_tasks: 30000}
     smoke: {model_reps: 1, n_tasks: 1500}
+
+  # ---- Revision experiments (reviewer requests). All use the revised numerics: no step-count
+  # ---- truncation bias (step_tail_tol) and no mass lost at the grid horizon (fold_tail).
+  load_sweep_ci:                   # revised Table VI: 8 seeds, 95% CIs, rho_L = 0.3 included
+    common: {model: {step_tail_tol: 1.0e-10, fold_tail: true}, spread: ci}
+    full: {profiles: [P1, P2, P3], rho_llm: [0.3, 0.5, 0.7, 0.8, 0.9], n_tasks: 30000, seeds: 8}
+    smoke: {profiles: [P3], rho_llm: [0.5], n_tasks: 1500, seeds: 2}
+
+  ablation_ci:                     # revised ablation on the same 8-seed reference as cv_sensitivity
+    common: {rho_llm: 0.8, model: {step_tail_tol: 1.0e-10, fold_tail: true}, spread: ci}
+    full: {n_tasks: 30000, seeds: 8}
+    smoke: {n_tasks: 1500, seeds: 2}
+
+  bottleneck_batch:                # Table VII plus batch-arrival correction at the tool pool
+    common:
+      fraction_of_limit: 0.9
+      model: {step_tail_tol: 1.0e-10, fold_tail: true}
+      spread: ci
+      cases:
+        P1: {profile: P1}
+        P2: {profile: P2}
+        P2_kT8: {profile: P2, tool_servers: 8}
+        P3: {profile: P3}
+    full: {n_tasks: 30000, seeds: 8}
+    smoke:
+      n_tasks: 1500
+      seeds: 2
+      cases:
+        P2_kT8: {profile: P2, tool_servers: 8}
+
+  cv_sensitivity_k1:               # CV sensitivity with a single LLM server (k_L = 1)
+    # Tails reach several hundred seconds with one server: 3000 s grid instead of 600 s.
+    common: {rho_llm: 0.8, llm_servers: 1, model: {step_tail_tol: 1.0e-10, fold_tail: true}, grid: {dt: 0.02, n: 150000}}
+    full: {llm_cv: [0.5, 0.9, 1.5, 2.5], n_tasks: 30000, seeds: 8}
+    smoke: {llm_cv: [0.5], n_tasks: 1500, seeds: 2}
+
+  cv_runlength:                    # run-length check at CV 2.5 (k_L = 8): 4x longer runs
+    common: {rho_llm: 0.8, model: {step_tail_tol: 1.0e-10, fold_tail: true}}
+    full: {llm_cv: [2.5], n_tasks: 120000, seeds: 8}
+    smoke: {llm_cv: [2.5], n_tasks: 3000, seeds: 2}
+
+  depth_validation:                # depth sweep: truncated vs untruncated model vs simulation
+    common: {rate: 0.1, step_tail_tol: 1.0e-10}
+    full: {mean_steps: [2, 4, 8, 12, 16], n_tasks: 30000, seeds: 8}
+    smoke: {mean_steps: [2, 8], n_tasks: 1500, seeds: 2}

@@ -37,7 +37,7 @@ LAT = ("mean", "p50", "p95", "p99")
 
 def _options(params: dict[str, Any], **kw: Any) -> ModelOptions:
     g = params.get("grid", {})
-    return ModelOptions(grid=Grid(dt=g.get("dt", 0.02), n=g.get("n", 30_000)), **kw)
+    return ModelOptions(grid=Grid(dt=g.get("dt", 0.02), n=g.get("n", 30_000)), **{**params.get("model", {}), **kw})
 
 
 def _pred_dict(system: SystemConfig, rate: float, opts: ModelOptions) -> dict[str, Any]:
@@ -202,7 +202,7 @@ def load_sweep(profiles: Profiles, params: dict[str, Any]) -> dict[str, Any]:
         for rho in params["rho_llm"]:
             rate = rate_for_llm_utilization(system, rho)
             model = _pred_dict(system, rate, opts)
-            sim = _sim_chain(system, rate, params, "sd")
+            sim = _sim_chain(system, rate, params, params.get("spread", "sd"))
             rows.append(
                 {
                     "rho_llm": rho,
@@ -231,7 +231,8 @@ def bottleneck(profiles: Profiles, params: dict[str, Any]) -> dict[str, Any]:
         rate = params["fraction_of_limit"] * lim.max_rate
         sq = structural_quantities(system.workflow)
         model = _pred_dict(system, rate, opts)
-        sim = _sim_chain(system, rate, params, "sd")
+        batch = _pred_dict(system, rate, _options(params, tool_ca2="batch"))
+        sim = _sim_chain(system, rate, params, params.get("spread", "sd"))
         rows.append(
             {
                 "case": label,
@@ -244,6 +245,8 @@ def bottleneck(profiles: Profiles, params: dict[str, Any]) -> dict[str, Any]:
                 "model": model,
                 "sim": sim,
                 "error": _errors(model, sim),
+                "batch_model": batch,
+                "batch_error": _errors(batch, sim),
             }
         )
     return {"rows": rows}
@@ -254,7 +257,7 @@ def ablation(profiles: Profiles, params: dict[str, Any]) -> dict[str, Any]:
     """Remove one model component at a time (paper Table 11) and compare with simulation."""
     system = profiles["P3"]
     rate = rate_for_llm_utilization(system, params["rho_llm"])
-    sim = _sim_chain(system, rate, params, "sd")
+    sim = _sim_chain(system, rate, params, params.get("spread", "sd"))
     variants: dict[str, tuple[SystemConfig, ModelOptions]] = {
         "full_model": (system, _options(params)),
         "no_queueing": (system, _options(params, use_queueing=False)),
@@ -305,6 +308,8 @@ def cv_sensitivity(profiles: Profiles, params: dict[str, Any]) -> dict[str, Any]
     rows = []
     for cv in params["llm_cv"]:
         system = profiles["P3"].with_updates(**{"llm.cv": cv})
+        if "llm_servers" in params:
+            system = system.with_updates(**{"llm.servers": params["llm_servers"]})
         rate = rate_for_llm_utilization(system, params["rho_llm"])
         model = _pred_dict(system, rate, opts)
         sim = _sim_chain(system, rate, params, "ci")
@@ -414,6 +419,29 @@ def depth_sweep(profiles: Profiles, params: dict[str, Any]) -> dict[str, Any]:
     return {"rows": rows}
 
 
+def depth_validation(profiles: Profiles, params: dict[str, Any]) -> dict[str, Any]:
+    """Depth sweep with the paper's truncated model, the untruncated model, and simulation."""
+    truncated = _options(params, step_tail_tol=None, fold_tail=False)
+    exact = _options(params, step_tail_tol=params.get("step_tail_tol", 1e-10), fold_tail=True)
+    rows = []
+    for n_bar in params["mean_steps"]:
+        system = profiles["P3"].with_updates(**{"workflow.mean_steps": n_bar})
+        model_t = _pred_dict(system, params["rate"], truncated)
+        model_x = _pred_dict(system, params["rate"], exact)
+        sim = _sim_chain(system, params["rate"], params, "ci")
+        rows.append(
+            {
+                "mean_steps": n_bar,
+                "truncated_model": model_t,
+                "model": model_x,
+                "sim": sim,
+                "truncated_error": _errors(model_t, sim),
+                "error": _errors(model_x, sim),
+            }
+        )
+    return {"rows": rows}
+
+
 def runtime(profiles: Profiles, params: dict[str, Any]) -> dict[str, Any]:
     """Wall-clock cost of one model evaluation vs one simulation run on THIS machine."""
     system = profiles["P3"]
@@ -448,4 +476,11 @@ EXPERIMENTS: dict[str, Callable[[Profiles, dict[str, Any]], dict[str, Any]]] = {
     "capacity": capacity,
     "depth_sweep": depth_sweep,
     "runtime": runtime,
+    # Revision experiments (reviewer requests); configured in configs/experiments.yaml.
+    "load_sweep_ci": load_sweep,
+    "ablation_ci": ablation,
+    "bottleneck_batch": bottleneck,
+    "cv_sensitivity_k1": cv_sensitivity,
+    "cv_runlength": cv_sensitivity,
+    "depth_validation": depth_validation,
 }

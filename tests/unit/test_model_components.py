@@ -10,7 +10,8 @@ from pydantic import ValidationError
 from agentq.bursts import MMPP2, bracket, interarrival_scv
 from agentq.calibration import calibrate, estimate_delegation, fit_service_times, synthetic_trace
 from agentq.config import SystemConfig, WorkflowConfig, load_profiles
-from agentq.model import ModelOptions, mean_value_baseline, predict
+from agentq.grid import convolve
+from agentq.model import ModelOptions, mean_value_baseline, predict, tool_arrival_scv
 from agentq.planning import max_rate_for_p99, min_llm_servers_for_rate
 from agentq.structure import rate_for_llm_utilization
 from agentq.trees import agents_per_tree, predict_tree, tree_success_probability
@@ -72,6 +73,38 @@ class TestChainModel(unittest.TestCase):
         self.assertLess(pred.p95, pred.p99)
         self.assertAlmostEqual(pred.pmf.sum(), 1.0, places=9)  # type: ignore[union-attr]
         self.assertLess(pred.horizon_tail_mass, 1e-6)
+
+    def test_step_tail_tolerance_removes_truncation_bias(self) -> None:
+        deep = profiles()["P3"].with_updates(**{"workflow.mean_steps": 16})
+        paper = predict(deep, 0.1, FAST)
+        exact = predict(deep, 0.1, ModelOptions(grid=FAST.grid, step_tail_tol=1e-10))
+        longer = predict(deep, 0.1, ModelOptions(grid=FAST.grid, max_steps=600))
+        assert paper.p99 is not None and exact.p99 is not None and longer.p99 is not None
+        self.assertGreater(exact.p99, paper.p99)  # truncation at 80 steps biases p99 down
+        self.assertAlmostEqual(exact.p99, longer.p99, delta=FAST.grid.dt)
+        self.assertEqual(ModelOptions(step_tail_tol=None).steps_needed(0.93), 80)
+        self.assertGreater(ModelOptions(step_tail_tol=1e-10).steps_needed(0.93), 300)
+
+    def test_fold_tail_keeps_horizon_mass(self) -> None:
+        a = np.zeros(100)
+        a[[10, 80]] = 0.5
+        dropped = convolve(a, a)
+        folded = convolve(a, a, fold_tail=True)
+        self.assertAlmostEqual(folded[-1], 0.25, places=12)  # the sum at 160 folds into bin 99
+        self.assertAlmostEqual(folded[90], 0.5, places=12)
+        self.assertAlmostEqual(dropped.sum(), 1.0, places=12)
+        self.assertAlmostEqual(dropped[20], 0.25 / 0.75, places=12)  # renormalized after dropping
+        self.assertAlmostEqual(folded[20], 0.25, places=12)
+
+    def test_batch_tool_scv(self) -> None:
+        self.assertEqual(tool_arrival_scv(6, "fixed"), 6)
+        self.assertEqual(tool_arrival_scv(2.0, "poisson"), 3.0)
+        p2 = profiles()["P2"].with_updates(**{"tool.servers": 8})
+        rate = 0.9 * 0.315
+        base = predict(p2, rate, FAST)
+        batch = predict(p2, rate, ModelOptions(grid=FAST.grid, tool_ca2="batch"))
+        assert base.p99 is not None and batch.p99 is not None
+        self.assertGreater(batch.p99, base.p99)
 
     def test_unstable_returns_no_latency(self) -> None:
         p3 = profiles()["P3"]

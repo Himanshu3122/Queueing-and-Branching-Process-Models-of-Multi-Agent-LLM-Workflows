@@ -4,9 +4,11 @@ After completing its chain successfully, each agent delegates to ``D ~ Poisson(m
 running the same kind of chain and completes when all of them complete. Under independence of
 sub-trees, the latency CDF of successful trees satisfies the fixed point
 
-    F_T = f_X * d/dt exp{ m S (F_T - 1) }                                  (Eq. 22)
+    F_T = F_X * dH,   H(t) = exp{ m S (F_T(t) - 1) }                     (Eq. 22)
 
-where ``f_X`` is the successful-chain pmf at the load inflated by ``M = 1/(1 - m P_s)``.
+where ``F_X`` is the successful-chain distribution at the load inflated by ``M = 1/(1 - m P_s)``
+and ``dH`` includes the atom ``H(0) = exp(-m S)`` for agents that delegate to no one (it lands
+in grid bin 0 through :func:`agentq.grid.pmf_from_cdf_values`).
 """
 
 from __future__ import annotations
@@ -92,7 +94,7 @@ def predict_tree(
     iterations = 0
     for iterations in range(max_iterations):  # noqa: B007 - final index is reported
         h = pmf_from_cdf_values(np.exp(delegation_mean * s * (cdf - 1.0)))
-        new_cdf = np.cumsum(convolve(f_x, h))
+        new_cdf = np.cumsum(convolve(f_x, h, (options or ModelOptions()).fold_tail))
         if np.max(np.abs(new_cdf - cdf)) < tol:
             cdf = new_cdf
             converged = True

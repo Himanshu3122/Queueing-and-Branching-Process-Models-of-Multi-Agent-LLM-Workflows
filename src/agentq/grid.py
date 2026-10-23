@@ -60,17 +60,22 @@ class Grid:
         return pmf
 
 
-def convolve(a: FloatArray, b: FloatArray) -> FloatArray:
-    """Distribution of the sum of two independent grid variables (FFT, truncated to grid length).
+def convolve(a: FloatArray, b: FloatArray, fold_tail: bool = False) -> FloatArray:
+    """Distribution of the sum of two independent grid variables (linear FFT convolution).
 
-    Negative round-off is clipped and the result renormalized, matching the reference
-    implementation used for the paper.
+    The full linear convolution has ``2n - 1`` points. By default (the reference implementation
+    used for the paper) the part beyond the horizon is dropped and the rest renormalized, which
+    biases tails down when mass reaches the horizon. With ``fold_tail`` that part is added to
+    the last bin instead, so ``pmf[-1]`` measures the mass at or beyond the horizon.
     """
     if a.shape != b.shape:
         raise ValueError(f"pmf shapes differ: {a.shape} vs {b.shape}")
     n = a.shape[0]
     size = 2 * n
-    out = np.fft.irfft(np.fft.rfft(a, size) * np.fft.rfft(b, size), size)[:n]
+    full = np.fft.irfft(np.fft.rfft(a, size) * np.fft.rfft(b, size), size)
+    out = full[:n].copy()
+    if fold_tail:
+        out[-1] += max(float(full[n:].sum()), 0.0)
     out = np.maximum(out, 0.0)
     total = out.sum()
     if total <= 0:
