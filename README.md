@@ -11,7 +11,7 @@ Predict latency percentiles, failure probability, and execution cost from workfl
 
 > [!WARNING]
 > **Research Status & Validation Notice**  
-> This repository provides the reference implementation of the research paper *Queueing and Branching-Process Models of Multi-Agent LLM Workflows* (`paper/main.tex`). All predictions were validated **exclusively against a discrete-event simulator** under **assumed** architectural parameters. The models have not been calibrated or tested against production traces from real LLM agent deployments. Outputs should be interpreted as optimistic estimates at moderate workloads ($\rho_L \le 0.8$). See [Limitations & Validity Boundaries](#limitations--validity-boundaries).
+> This repository provides the reference implementation of the research paper *Queueing and Branching-Process Models of Multi-Agent LLM Workflows*. All predictions were validated **exclusively against a discrete-event simulator** under **assumed** architectural parameters. The models have not been calibrated or tested against production traces from real LLM agent deployments. Outputs should be interpreted as optimistic estimates at moderate workloads ($\rho_L \le 0.8$). See [Limitations & Validity Boundaries](#limitations--validity-boundaries).
 
 ---
 
@@ -95,7 +95,7 @@ The paper defines four canonical benchmark system profiles ([configs/profiles.ya
 
 ## Key Contributions & Reported Findings
 
-The following empirical and theoretical properties were established in the paper (`paper/main.tex`) and verified in local replication:
+The following empirical and theoretical properties were established in the paper and verified in local replication:
 
 - **Accuracy under moderate load:** At LLM pool utilization $\rho_L \le 0.8$, analytical predictions for mean, p95, and p99 latencies are within **2.3%, 4.6%, and 9.6%** of discrete-event simulations, with success probability within **0.2 percentage points**.
 - **Cost invariance theorem:** The expected number of LLM calls per successful task equals:
@@ -165,7 +165,6 @@ Comprehensive architecture documentation: [docs/architecture.md](docs/architectu
 ├── scripts/
 │   └── smoke_test.py         # Standalone 5-second end-to-end verification script
 ├── docs/                     # Architectural, mathematical, and deployment documentation
-├── paper/                    # LaTeX source (`main.tex`) and bibliography for reference
 ├── pyproject.toml            # Package build configuration, dependencies, and tools
 ├── Makefile                  # Build, test, lint, and reproduction automation targets
 ├── Dockerfile                # Production container specification for Starlette API
