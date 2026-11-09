@@ -5,6 +5,7 @@ These use small inline fixtures and do not need the downloaded datasets.
 
 from __future__ import annotations
 
+import importlib.util
 import unittest
 
 import numpy as np
@@ -248,6 +249,7 @@ class TestSwegym(unittest.TestCase):
 
 
 class TestBurstgpt(unittest.TestCase):
+    @unittest.skipUnless(importlib.util.find_spec("pandas"), "pandas (the 'real' extra) is not installed")
     def test_load_spreads_ties_and_flags_failures(self) -> None:
         import tempfile
         from pathlib import Path
