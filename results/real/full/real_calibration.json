@@ -1,0 +1,820 @@
+{
+ "experiment": "real_calibration",
+ "mode": "full",
+ "created_utc": "2026-11-09T08:15:45+00:00",
+ "elapsed_seconds": 9.18,
+ "params": {
+  "grid": {
+   "dt": 0.02,
+   "n": 30000
+  },
+  "agentinstruct_dir": "data/raw/agentinstruct",
+  "azure_csv": "data/raw/azure/AzureLLMInferenceTrace_conv.csv",
+  "envs": [
+   "os",
+   "db",
+   "alfworld",
+   "webshop",
+   "kg",
+   "mixed"
+  ],
+  "latency": {
+   "overhead_s": 0.25,
+   "prefill_ms_per_token": 0.2,
+   "decode_ms_per_token": 25.0
+  },
+  "llm_servers": 8,
+  "tool": {
+   "servers": 16,
+   "mean_service": 1.0,
+   "cv": 1.5
+  },
+  "seed": 0
+ },
+ "environment": {
+  "agentq": "1.0.0",
+  "python": "3.12.15",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 181 Stepping 0, GenuineIntel"
+ },
+ "provenance": "reproduced locally with agentq (not the paper's original output files)",
+ "results": {
+  "latency_model": {
+   "overhead_s": 0.25,
+   "prefill_ms_per_token": 0.2,
+   "decode_ms_per_token": 25.0
+  },
+  "environments": {
+   "os": {
+    "n_trajectories": 195,
+    "calibration": {
+     "n_tasks": 195,
+     "n_attempts": 751,
+     "failure_prob": 0.02663115845539281,
+     "failure_prob_se": 0.005875079947294841,
+     "max_retries_observed": 3,
+     "mean_steps": 3.7487231316318863,
+     "fanout_mean": 0.7403462050599201,
+     "fanout_dispersion_index": 0.2596537949400799,
+     "fanout_kind": "fixed",
+     "llm_fit": [
+      {
+       "family": "lognormal",
+       "log_likelihood": -645.3984836276184,
+       "aic": 1294.7969672552367,
+       "mean": 1.7139575073318971,
+       "cv": 0.3666143106090855
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": -668.6685441002498,
+       "aic": 1341.3370882004997,
+       "mean": 1.7184111850865513,
+       "cv": 0.35853837547687684
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -1157.5915008768864,
+       "aic": 2317.1830017537727,
+       "mean": 1.7184111850865513,
+       "cv": 1.0
+      }
+     ],
+     "tool_fit": []
+    },
+    "calibrated_system": {
+     "name": "os",
+     "workflow": {
+      "mean_steps": 3.7487231316318863,
+      "fanout_kind": "fixed",
+      "fanout": 1.0,
+      "failure_prob": 0.02663115845539281,
+      "max_retries": 3
+     },
+     "llm": {
+      "servers": 8,
+      "mean_service": 1.7184111850865513,
+      "cv": 0.39178138239097754
+     },
+     "tool": {
+      "servers": 16,
+      "mean_service": 1.0,
+      "cv": 1.5
+     }
+    },
+    "steps": {
+     "mean": 3.7487179487179487,
+     "var": 1.714882368490616,
+     "geometric_var": 10.304201986000091,
+     "var_ratio_to_geometric": 0.16642553890350348,
+     "p99": 7.060000000000002,
+     "geometric_p99": 15.0,
+     "ks_distance_to_geometric": 0.2777400473588121,
+     "min": 2,
+     "max": 8
+    },
+    "attempts_per_task": 3.8512820512820514,
+    "failures": {
+     "p_fail_after_fail": 0.2,
+     "n_after_fail": 20,
+     "p_fail_after_success": 0.018656716417910446,
+     "fraction_tasks_with_a_failure": 0.07179487179487179
+    },
+    "fanout": {
+     "mean": 0.7403462050599201,
+     "zero_fraction": 0.2596537949400799,
+     "model_kind": "fixed",
+     "model_fanout": 1.0
+    },
+    "llm_service": {
+     "mean": 1.7184111850865513,
+     "cv": 0.39178138239097754,
+     "p99": 3.9408000000000003,
+     "aic_fits": [
+      {
+       "family": "lognormal",
+       "log_likelihood": -645.3984836276184,
+       "aic": 1294.7969672552367,
+       "mean": 1.7139575073318971,
+       "cv": 0.3666143106090855
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": -668.6685441002498,
+       "aic": 1341.3370882004997,
+       "mean": 1.7184111850865513,
+       "cv": 0.35853837547687684
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -1157.5915008768864,
+       "aic": 2317.1830017537727,
+       "mean": 1.7184111850865513,
+       "cv": 1.0
+      }
+     ],
+     "spearman_position_vs_service": 0.012815437547471215,
+     "spearman_pvalue": 0.7258670661393251,
+     "mean_first_call": 1.5885907692307695,
+     "mean_last_call": 1.2382287179487181,
+     "context_tokens": {
+      "median": 663.0,
+      "p99": 1444.5
+     },
+     "output_tokens": {
+      "median": 48.0,
+      "p99": 140.5
+     }
+    }
+   },
+   "db": {
+    "n_trajectories": 538,
+    "calibration": {
+     "n_tasks": 538,
+     "n_attempts": 1109,
+     "failure_prob": 0.028854824165915238,
+     "failure_prob_se": 0.005026729570882255,
+     "max_retries_observed": 5,
+     "mean_steps": 2.0018587372170584,
+     "fanout_mean": 0.5202885482416592,
+     "fanout_dispersion_index": 0.4797114517583408,
+     "fanout_kind": "fixed",
+     "llm_fit": [
+      {
+       "family": "lognormal",
+       "log_likelihood": -2000.7298437084337,
+       "aic": 4005.4596874168674,
+       "mean": 2.747229083892091,
+       "cv": 0.7518416596371316
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": -2099.3529279999257,
+       "aic": 4202.705855999851,
+       "mean": 2.812028313796213,
+       "cv": 0.6782966178024125
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -2255.6018014821666,
+       "aic": 4513.203602964333,
+       "mean": 2.812028313796213,
+       "cv": 1.0
+      }
+     ],
+     "tool_fit": []
+    },
+    "calibrated_system": {
+     "name": "db",
+     "workflow": {
+      "mean_steps": 2.0018587372170584,
+      "fanout_kind": "fixed",
+      "fanout": 1.0,
+      "failure_prob": 0.028854824165915238,
+      "max_retries": 5
+     },
+     "llm": {
+      "servers": 8,
+      "mean_service": 2.812028313796213,
+      "cv": 0.8679310127689241
+     },
+     "tool": {
+      "servers": 16,
+      "mean_service": 1.0,
+      "cv": 1.5
+     }
+    },
+    "steps": {
+     "mean": 2.0018587360594795,
+     "var": 0.08379542134812014,
+     "geometric_var": 2.0055796665552172,
+     "var_ratio_to_geometric": 0.041781148236333644,
+     "p99": 2.0,
+     "geometric_p99": 7.0,
+     "ks_distance_to_geometric": 0.48094838656295785,
+     "min": 1,
+     "max": 6
+    },
+    "attempts_per_task": 2.0613382899628254,
+    "failures": {
+     "p_fail_after_fail": 0.40625,
+     "n_after_fail": 32,
+     "p_fail_after_success": 0.0,
+     "fraction_tasks_with_a_failure": 0.03531598513011153
+    },
+    "fanout": {
+     "mean": 0.5202885482416592,
+     "zero_fraction": 0.47971145175834085,
+     "model_kind": "fixed",
+     "model_fanout": 1.0
+    },
+    "llm_service": {
+     "mean": 2.812028313796213,
+     "cv": 0.8679310127689241,
+     "p99": 10.262544000000005,
+     "aic_fits": [
+      {
+       "family": "lognormal",
+       "log_likelihood": -2000.7298437084337,
+       "aic": 4005.4596874168674,
+       "mean": 2.747229083892091,
+       "cv": 0.7518416596371316
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": -2099.3529279999257,
+       "aic": 4202.705855999851,
+       "mean": 2.812028313796213,
+       "cv": 0.6782966178024125
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -2255.6018014821666,
+       "aic": 4513.203602964333,
+       "mean": 2.812028313796213,
+       "cv": 1.0
+      }
+     ],
+     "spearman_position_vs_service": -0.5026920269513152,
+     "spearman_pvalue": 4.539645147420707e-72,
+     "mean_first_call": 3.590350185873606,
+     "mean_last_call": 2.0594706319702603,
+     "context_tokens": {
+      "median": 406.0,
+      "p99": 958.2000000000007
+     },
+     "output_tokens": {
+      "median": 62.0,
+      "p99": 392.84000000000015
+     }
+    }
+   },
+   "alfworld": {
+    "n_trajectories": 336,
+    "calibration": {
+     "n_tasks": 336,
+     "n_attempts": 4542,
+     "failure_prob": 0.006164685160722149,
+     "failure_prob_se": 0.0011614194591928605,
+     "max_retries_observed": 2,
+     "mean_steps": 13.434562946341313,
+     "fanout_mean": 1.0,
+     "fanout_dispersion_index": 0.0,
+     "fanout_kind": "fixed",
+     "llm_fit": [
+      {
+       "family": "lognormal",
+       "log_likelihood": -335.21587534799556,
+       "aic": 674.4317506959911,
+       "mean": 0.7533785481894081,
+       "cv": 0.3833905967687005
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": -830.4100589827987,
+       "aic": 1664.8201179655973,
+       "mean": 0.76431571994716,
+       "cv": 0.4020242292431632
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -3321.2269968912638,
+       "aic": 6644.4539937825275,
+       "mean": 0.76431571994716,
+       "cv": 1.0
+      }
+     ],
+     "tool_fit": []
+    },
+    "calibrated_system": {
+     "name": "alfworld",
+     "workflow": {
+      "mean_steps": 13.434562946341313,
+      "fanout_kind": "fixed",
+      "fanout": 1.0,
+      "failure_prob": 0.006164685160722149,
+      "max_retries": 2
+     },
+     "llm": {
+      "servers": 8,
+      "mean_service": 0.76431571994716,
+      "cv": 0.4955068255727619
+     },
+     "tool": {
+      "servers": 16,
+      "mean_service": 1.0,
+      "cv": 1.5
+     }
+    },
+    "steps": {
+     "mean": 13.43452380952381,
+     "var": 72.66435678749112,
+     "geometric_var": 167.05291861286565,
+     "var_ratio_to_geometric": 0.4349780739592229,
+     "p99": 35.0,
+     "geometric_p99": 60.0,
+     "ks_distance_to_geometric": 0.19871795400092396,
+     "min": 3,
+     "max": 35
+    },
+    "attempts_per_task": 13.517857142857142,
+    "failures": {
+     "p_fail_after_fail": 0.03571428571428571,
+     "n_after_fail": 28,
+     "p_fail_after_success": 0.00646242221158449,
+     "fraction_tasks_with_a_failure": 0.050595238095238096
+    },
+    "fanout": {
+     "mean": 1.0,
+     "zero_fraction": 0.0,
+     "model_kind": "fixed",
+     "model_fanout": 1.0
+    },
+    "llm_service": {
+     "mean": 0.76431571994716,
+     "cv": 0.4955068255727619,
+     "p99": 2.0748520000000004,
+     "aic_fits": [
+      {
+       "family": "lognormal",
+       "log_likelihood": -335.21587534799556,
+       "aic": 674.4317506959911,
+       "mean": 0.7533785481894081,
+       "cv": 0.3833905967687005
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": -830.4100589827987,
+       "aic": 1664.8201179655973,
+       "mean": 0.76431571994716,
+       "cv": 0.4020242292431632
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -3321.2269968912638,
+       "aic": 6644.4539937825275,
+       "mean": 0.76431571994716,
+       "cv": 1.0
+      }
+     ],
+     "spearman_position_vs_service": 0.1694026546751246,
+     "spearman_pvalue": 1.3685602163611636e-30,
+     "mean_first_call": 1.6458083333333335,
+     "mean_last_call": 0.7189309523809525,
+     "context_tokens": {
+      "median": 701.5,
+      "p99": 1458.1800000000003
+     },
+     "output_tokens": {
+      "median": 8.0,
+      "p99": 68.59000000000015
+     }
+    }
+   },
+   "webshop": {
+    "n_trajectories": 351,
+    "calibration": {
+     "n_tasks": 351,
+     "n_attempts": 1291,
+     "failure_prob": 0.0,
+     "failure_prob_se": 0.0,
+     "max_retries_observed": 0,
+     "mean_steps": 3.678062678062677,
+     "fanout_mean": 1.0,
+     "fanout_dispersion_index": 0.0,
+     "fanout_kind": "fixed",
+     "llm_fit": [
+      {
+       "family": "lognormal",
+       "log_likelihood": 99.18355744357947,
+       "aic": -194.36711488715895,
+       "mean": 1.415147537341212,
+       "cv": 0.16142876057788
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": 68.26670923096341,
+       "aic": -132.53341846192683,
+       "mean": 1.415955693261038,
+       "cv": 0.16354839803293406
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -1740.0158737833149,
+       "aic": 3482.0317475666297,
+       "mean": 1.415955693261038,
+       "cv": 1.0
+      }
+     ],
+     "tool_fit": []
+    },
+    "calibrated_system": {
+     "name": "webshop",
+     "workflow": {
+      "mean_steps": 3.678062678062677,
+      "fanout_kind": "fixed",
+      "fanout": 1.0,
+      "failure_prob": 0.0,
+      "max_retries": 0
+     },
+     "llm": {
+      "servers": 8,
+      "mean_service": 1.415955693261038,
+      "cv": 0.17278230236290804
+     },
+     "tool": {
+      "servers": 16,
+      "mean_service": 1.0,
+      "cv": 1.5
+     }
+    },
+    "steps": {
+     "mean": 3.678062678062678,
+     "var": 0.7217745217745218,
+     "geometric_var": 9.850082385694915,
+     "var_ratio_to_geometric": 0.07327598831282275,
+     "p99": 6.0,
+     "geometric_p99": 15.0,
+     "ks_distance_to_geometric": 0.4698445593367898,
+     "min": 3,
+     "max": 9
+    },
+    "attempts_per_task": 3.678062678062678,
+    "failures": {
+     "p_fail_after_fail": null,
+     "n_after_fail": 0,
+     "p_fail_after_success": 0.0,
+     "fraction_tasks_with_a_failure": 0.0
+    },
+    "fanout": {
+     "mean": 1.0,
+     "zero_fraction": 0.0,
+     "model_kind": "fixed",
+     "model_fanout": 1.0
+    },
+    "llm_service": {
+     "mean": 1.415955693261038,
+     "cv": 0.17278230236290804,
+     "p99": 2.2011199999999964,
+     "aic_fits": [
+      {
+       "family": "lognormal",
+       "log_likelihood": 99.18355744357947,
+       "aic": -194.36711488715895,
+       "mean": 1.415147537341212,
+       "cv": 0.16142876057788
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": 68.26670923096341,
+       "aic": -132.53341846192683,
+       "mean": 1.415955693261038,
+       "cv": 0.16354839803293406
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -1740.0158737833149,
+       "aic": 3482.0317475666297,
+       "mean": 1.415955693261038,
+       "cv": 1.0
+      }
+     ],
+     "spearman_position_vs_service": -0.15702718106978528,
+     "spearman_pvalue": 1.4128973599815172e-08,
+     "mean_first_call": 1.3859054131054132,
+     "mean_last_call": 1.3261698005698006,
+     "context_tokens": {
+      "median": 899.0,
+      "p99": 2176.2
+     },
+     "output_tokens": {
+      "median": 39.0,
+      "p99": 71.0
+     }
+    }
+   },
+   "kg": {
+    "n_trajectories": 324,
+    "calibration": {
+     "n_tasks": 324,
+     "n_attempts": 4549,
+     "failure_prob": 0.06858650252802814,
+     "failure_prob_se": 0.0037474221871577453,
+     "max_retries_observed": 14,
+     "mean_steps": 13.077160493827169,
+     "fanout_mean": 0.7566498131457463,
+     "fanout_dispersion_index": 0.2433501868542537,
+     "fanout_kind": "fixed",
+     "llm_fit": [
+      {
+       "family": "lognormal",
+       "log_likelihood": -603.9242717918912,
+       "aic": 1211.8485435837824,
+       "mean": 1.60935857620202,
+       "cv": 0.17566040941138444
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": -732.174346532671,
+       "aic": 1468.348693065342,
+       "mean": 1.6106404044845022,
+       "cv": 0.17836410026971164
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -6717.198361475943,
+       "aic": 13436.396722951886,
+       "mean": 1.6106404044845022,
+       "cv": 1.0
+      }
+     ],
+     "tool_fit": []
+    },
+    "calibrated_system": {
+     "name": "kg",
+     "workflow": {
+      "mean_steps": 13.077160493827169,
+      "fanout_kind": "fixed",
+      "fanout": 1.0,
+      "failure_prob": 0.06858650252802814,
+      "max_retries": 14
+     },
+     "llm": {
+      "servers": 8,
+      "mean_service": 1.6106404044845022,
+      "cv": 0.19591315107706098
+     },
+     "tool": {
+      "servers": 16,
+      "mean_service": 1.0,
+      "cv": 1.5
+     }
+    },
+    "steps": {
+     "mean": 13.07716049382716,
+     "var": 2.3500649772579596,
+     "geometric_var": 157.93496608748688,
+     "var_ratio_to_geometric": 0.014879953663688121,
+     "p99": 17.769999999999982,
+     "geometric_p99": 58.0,
+     "ks_distance_to_geometric": 0.5116125553591979,
+     "min": 9,
+     "max": 19
+    },
+    "attempts_per_task": 14.040123456790123,
+    "failures": {
+     "p_fail_after_fail": 0.6891025641025641,
+     "n_after_fail": 312,
+     "p_fail_after_success": 0.024789164324048044,
+     "fraction_tasks_with_a_failure": 0.2222222222222222
+    },
+    "fanout": {
+     "mean": 0.7566498131457463,
+     "zero_fraction": 0.2433501868542537,
+     "model_kind": "fixed",
+     "model_fanout": 1.0
+    },
+    "llm_service": {
+     "mean": 1.6106404044845022,
+     "cv": 0.19591315107706098,
+     "p99": 2.6480319999999993,
+     "aic_fits": [
+      {
+       "family": "lognormal",
+       "log_likelihood": -603.9242717918912,
+       "aic": 1211.8485435837824,
+       "mean": 1.60935857620202,
+       "cv": 0.17566040941138444
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": -732.174346532671,
+       "aic": 1468.348693065342,
+       "mean": 1.6106404044845022,
+       "cv": 0.17836410026971164
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -6717.198361475943,
+       "aic": 13436.396722951886,
+       "mean": 1.6106404044845022,
+       "cv": 1.0
+      }
+     ],
+     "spearman_position_vs_service": -0.00898604739088879,
+     "spearman_pvalue": 0.5445671519004271,
+     "mean_first_call": 1.8147999999999995,
+     "mean_last_call": 1.3857086419753086,
+     "context_tokens": {
+      "median": 1221.0,
+      "p99": 2829.6399999999967
+     },
+     "output_tokens": {
+      "median": 44.0,
+      "p99": 77.0
+     }
+    }
+   },
+   "mixed": {
+    "n_trajectories": 1744,
+    "calibration": {
+     "n_tasks": 1744,
+     "n_attempts": 12242,
+     "failure_prob": 0.03202091161574906,
+     "failure_prob_se": 0.0015911958811600383,
+     "max_retries_observed": 14,
+     "mean_steps": 6.794724770642201,
+     "fanout_mean": 0.8501878777977455,
+     "fanout_dispersion_index": 0.14981212220225448,
+     "fanout_kind": "fixed",
+     "llm_fit": [
+      {
+       "family": "lognormal",
+       "log_likelihood": -11922.717065515037,
+       "aic": 23849.434131030073,
+       "mean": 1.3780308144595281,
+       "cv": 0.5783926834964737
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": -12629.451426133164,
+       "aic": 25262.90285226633,
+       "mean": 1.3915528671785657,
+       "cv": 0.5420734519339818
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -16287.00524164453,
+       "aic": 32576.01048328906,
+       "mean": 1.3915528671785657,
+       "cv": 1.0
+      }
+     ],
+     "tool_fit": []
+    },
+    "calibrated_system": {
+     "name": "mixed",
+     "workflow": {
+      "mean_steps": 6.794724770642201,
+      "fanout_kind": "fixed",
+      "fanout": 1.0,
+      "failure_prob": 0.03202091161574906,
+      "max_retries": 14
+     },
+     "llm": {
+      "servers": 8,
+      "mean_service": 1.3915528671785657,
+      "cv": 0.7247618152040197
+     },
+     "tool": {
+      "servers": 16,
+      "mean_service": 1.0,
+      "cv": 1.5
+     }
+    },
+    "steps": {
+     "mean": 6.794724770642202,
+     "var": 40.683024364824966,
+     "geometric_var": 39.37355993813651,
+     "var_ratio_to_geometric": 1.0332574557328795,
+     "p99": 30.0,
+     "geometric_p99": 29.0,
+     "ks_distance_to_geometric": 0.1414390508264623,
+     "min": 1,
+     "max": 35
+    },
+    "attempts_per_task": 7.019495412844036,
+    "failures": {
+     "p_fail_after_fail": 0.5943877551020408,
+     "n_after_fail": 392,
+     "p_fail_after_success": 0.013259449831783099,
+     "fraction_tasks_with_a_failure": 0.06995412844036697
+    },
+    "fanout": {
+     "mean": 0.8501878777977455,
+     "zero_fraction": 0.14981212220225454,
+     "model_kind": "fixed",
+     "model_fanout": 1.0
+    },
+    "llm_service": {
+     "mean": 1.3915528671785657,
+     "cv": 0.7247618152040197,
+     "p99": 5.5336180000000015,
+     "aic_fits": [
+      {
+       "family": "lognormal",
+       "log_likelihood": -11922.717065515037,
+       "aic": 23849.434131030073,
+       "mean": 1.3780308144595281,
+       "cv": 0.5783926834964737
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": -12629.451426133164,
+       "aic": 25262.90285226633,
+       "mean": 1.3915528671785657,
+       "cv": 0.5420734519339818
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -16287.00524164453,
+       "aic": 32576.01048328906,
+       "mean": 1.3915528671785657,
+       "cv": 1.0
+      }
+     ],
+     "spearman_position_vs_service": -0.27861228432760327,
+     "spearman_pvalue": 4.438381065815356e-217,
+     "mean_first_call": 2.2183619266055046,
+     "mean_last_call": 1.4366202981651375,
+     "context_tokens": {
+      "median": 844.0,
+      "p99": 2266.59
+     },
+     "output_tokens": {
+      "median": 38.0,
+      "p99": 207.59000000000015
+     }
+    }
+   }
+  },
+  "azure_arrivals": {
+   "n_arrivals": 19366,
+   "duration_s": 3501.721937,
+   "mean_rate": 5.5301364152832795,
+   "interarrival_scv": 1.1972079491680079,
+   "interarrival_lag1_corr": 0.062332139487712795,
+   "index_of_dispersion": {
+    "1.0": 1.3851418849785946,
+    "10.0": 3.856995898132027,
+    "60.0": 16.128259128235047,
+    "300.0": 56.09518130004204
+   },
+   "tokens": {
+    "context_tokens": {
+     "mean": 1154.6974078281523,
+     "cv": 0.9602463195346387
+    },
+    "generated_tokens": {
+     "mean": 211.12594237323142,
+     "cv": 0.771417626541808
+    }
+   },
+   "poisson_reference": {
+    "n_arrivals": 19366,
+    "duration_s": 3480.3236206677384,
+    "mean_rate": 5.564137738514274,
+    "interarrival_scv": 1.0000067378914392,
+    "interarrival_lag1_corr": -0.00327559572813897,
+    "index_of_dispersion": {
+     "1.0": 0.9985324111338258,
+     "10.0": 0.9640475155935769,
+     "60.0": 0.8370634451417133,
+     "300.0": 1.3184169492364428
+    }
+   }
+  }
+ }
+}

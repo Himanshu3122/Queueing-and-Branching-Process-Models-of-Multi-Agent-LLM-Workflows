@@ -27,6 +27,7 @@ dependencies = [
 [project.optional-dependencies]
 api = ["starlette>=0.36", "uvicorn>=0.27"]
 dev = ["pytest>=7.4", "ruff>=0.4"]
+real = ["pyarrow>=14", "tiktoken>=0.5", "pandas>=2.0"]  # real-data experiments (AgentInstruct parquet, GPT-4 tokenizer)
 
 [project.scripts]
 agentq = "agentq.cli:main"

@@ -7,6 +7,8 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 
+import numpy as np
+
 from agentq.config import SystemConfig, WorkflowConfig
 
 
@@ -43,8 +45,14 @@ def structural_quantities(workflow: WorkflowConfig) -> StructuralQuantities:
     p, r, q = workflow.failure_prob, workflow.max_retries, workflow.q
     s = 1.0 - p ** (r + 1)
     a = (1.0 - p ** (r + 1)) / (1.0 - p) if p > 0 else 1.0
-    nu = 1.0 / (1.0 - (1.0 - q) * s)
-    ps = q * s * nu
+    if workflow.step_pmf is None:  # geometric law, Eq. (7)
+        nu = 1.0 / (1.0 - (1.0 - q) * s)
+        ps = q * s * nu
+    else:  # general law: P_s = sum pi_n s^n, nu = sum pi_n (1 - s^n) / (1 - s)
+        pi = np.asarray(workflow.step_pmf)
+        n = np.arange(1, pi.size + 1)
+        ps = float((pi * s**n).sum())
+        nu = float((pi * (1.0 - s**n)).sum() / (1.0 - s)) if s < 1.0 else float((pi * n).sum())
     c_l = nu * a
     k = float(workflow.fanout)
     return StructuralQuantities(

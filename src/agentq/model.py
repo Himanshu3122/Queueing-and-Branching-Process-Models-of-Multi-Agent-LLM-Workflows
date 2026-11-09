@@ -197,8 +197,13 @@ def chain_prediction(
     step = _mixture_of_powers(attempt, w_att, fold)
 
     q, s = wf.q, sq.step_success
-    n = np.arange(1, opts.steps_needed((1.0 - q) * s) + 1)
-    w_steps = q * (1.0 - q) ** (n - 1) * s**n
+    if wf.step_pmf is None:  # geometric law with success tilt (Eq. (18))
+        n = np.arange(1, opts.steps_needed((1.0 - q) * s) + 1)
+        w_steps = q * (1.0 - q) ** (n - 1) * s**n
+    else:  # general step-count law, same success tilt: w_n ~ pi_n s^n
+        pi = np.asarray(wf.step_pmf)
+        w_steps = pi * s ** np.arange(1, pi.size + 1)
+        w_steps = w_steps[: np.flatnonzero(w_steps)[-1] + 1]
     w_steps /= w_steps.sum()
     task = _mixture_of_powers(step, w_steps, fold)
 

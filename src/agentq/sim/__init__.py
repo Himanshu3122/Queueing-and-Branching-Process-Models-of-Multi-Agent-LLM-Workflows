@@ -2,6 +2,16 @@
 
 from agentq.sim.arrivals import mmpp_arrivals, poisson_arrivals
 from agentq.sim.chain import SimResult, simulate_chain
+from agentq.sim.replay import ReplayTask, simulate_replay
 from agentq.sim.tree import TreeSimResult, simulate_tree
 
-__all__ = ["SimResult", "TreeSimResult", "mmpp_arrivals", "poisson_arrivals", "simulate_chain", "simulate_tree"]
+__all__ = [
+    "ReplayTask",
+    "SimResult",
+    "TreeSimResult",
+    "mmpp_arrivals",
+    "poisson_arrivals",
+    "simulate_chain",
+    "simulate_replay",
+    "simulate_tree",
+]

@@ -9,15 +9,33 @@ from typing import Any
 from agentq.config import load_profiles, load_yaml
 from agentq.experiments.common import Timer, save_result
 from agentq.experiments.paper import EXPERIMENTS
+from agentq.experiments.real import REAL_EXPERIMENTS
+from agentq.experiments.real_azure2024 import AZURE2024_EXPERIMENTS
+from agentq.experiments.real_burstgpt import BURSTGPT_EXPERIMENTS
+from agentq.experiments.real_fanout import FANOUT_EXPERIMENTS
+from agentq.experiments.real_mast import MAST_EXPERIMENTS
+from agentq.experiments.real_multiagent import MULTIAGENT_EXPERIMENTS
+from agentq.experiments.real_swegym import SWEGYM_EXPERIMENTS
 
 log = logging.getLogger(__name__)
 MODES = ("full", "smoke")
+ALL_EXPERIMENTS = {
+    **EXPERIMENTS,
+    **REAL_EXPERIMENTS,
+    **FANOUT_EXPERIMENTS,
+    **MULTIAGENT_EXPERIMENTS,
+    **SWEGYM_EXPERIMENTS,
+    **BURSTGPT_EXPERIMENTS,
+    **MAST_EXPERIMENTS,
+    **AZURE2024_EXPERIMENTS,
+}
+"""Paper experiments plus the real-data experiments (which need ``scripts/fetch_datasets.py``)."""
 
 
 def experiment_params(config: dict[str, Any], name: str, mode: str) -> dict[str, Any]:
     """Merge ``common`` and mode-specific parameters for one experiment."""
-    if name not in EXPERIMENTS:
-        raise KeyError(f"unknown experiment '{name}'; choose from {sorted(EXPERIMENTS)}")
+    if name not in ALL_EXPERIMENTS:
+        raise KeyError(f"unknown experiment '{name}'; choose from {sorted(ALL_EXPERIMENTS)}")
     if mode not in MODES:
         raise ValueError(f"mode must be one of {MODES}, got '{mode}'")
     spec = config.get("experiments", {}).get(name)
@@ -38,7 +56,7 @@ def run_experiment(
     profiles = load_profiles(profiles_path)
     log.info("running experiment=%s mode=%s", name, mode)
     with Timer() as timer:
-        data = EXPERIMENTS[name](profiles, params)
+        data = ALL_EXPERIMENTS[name](profiles, params)
     path = save_result(Path(out_dir) / mode / f"{name}.json", name, mode, params, data, timer.elapsed)
     log.info("finished experiment=%s in %.1fs -> %s", name, timer.elapsed, path)
     return path
@@ -47,5 +65,5 @@ def run_experiment(
 def run_all(
     mode: str, config_path: str | Path, profiles_path: str | Path, out_dir: str | Path, names: list[str] | None = None
 ) -> list[Path]:
-    """Run several (default: all) experiments sequentially."""
+    """Run several experiments sequentially (default: all paper experiments; real-data ones only by name)."""
     return [run_experiment(n, mode, config_path, profiles_path, out_dir) for n in (names or list(EXPERIMENTS))]

@@ -47,6 +47,23 @@ class WorkflowConfig(BaseModel):
     fanout: float = Field(ge=0, le=10_000, description="K (fixed) or mu_K (Poisson)")
     failure_prob: float = Field(ge=0.0, lt=1.0, description="p: per-attempt failure probability")
     max_retries: int = Field(ge=0, le=100, description="R: retries allowed per step")
+    step_pmf: tuple[float, ...] | None = Field(
+        default=None,
+        description=(
+            "Optional general step-count law: P(N = n) for n = 1, 2, ... (replaces the geometric law; "
+            "e.g. an empirical pmf, or a point mass for fixed-length pipelines). mean_steps is set to its mean."
+        ),
+    )
+
+    @model_validator(mode="before")
+    @classmethod
+    def _mean_from_pmf(cls, data: Any) -> Any:
+        if isinstance(data, dict) and data.get("step_pmf") is not None:
+            pmf = [float(x) for x in data["step_pmf"]]
+            if not pmf or any(x < 0 for x in pmf) or abs(sum(pmf) - 1.0) > 1e-6:
+                raise ValueError("step_pmf must be non-negative and sum to 1")
+            data = {**data, "step_pmf": tuple(pmf), "mean_steps": sum((i + 1) * x for i, x in enumerate(pmf))}
+        return data
 
     @model_validator(mode="after")
     def _fixed_fanout_is_integer(self) -> WorkflowConfig:

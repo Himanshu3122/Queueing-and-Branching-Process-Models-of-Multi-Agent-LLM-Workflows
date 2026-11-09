@@ -450,7 +450,40 @@ Artifacts are categorized into three strictly segregated directories:
 |---|---|---|
 | `results/paper_reported/` | Ground-truth raw JSON outputs from the authors' original publication runs | Tracked in Git (Read-only reference) |
 | `results/full/` | Full-mode reproduction runs executed locally on this repository | Tracked in Git (Reproducible benchmark) |
+| `results/real/full/` | Experiments on real public datasets (AgentInstruct, Azure LLM trace); see [docs/real_data.md](docs/real_data.md) | Tracked in Git |
 | `results/smoke/` | Truncated diagnostic artifacts produced during smoke testing | Ignored in `.gitignore` |
+
+### Real-Data Experiments
+
+Two experiments go beyond the paper's synthetic protocol. They use real GPT-4 agent trajectories
+(AgentInstruct, 1,744 multi-step tasks) and real production arrival timestamps (Azure LLM inference
+trace 2023, ISCA 2024; Mooncake tool/agent and conversation traces, FAST 2025), plus real tool
+fan-outs from BFCL-Live user queries (ICML 2025), failed multi-agent runs from Who&When (ICML 2025), 6,055 SWE-Gym coding-agent runs with both outcomes
+(ICML 2025), 171 days of BurstGPT traffic with measured response times (KDD 2025), MAST multi-agent traces with
+measured step timings (NeurIPS 2025), and a week of Azure 2024 production traffic (HPCA 2025, 44M requests):
+
+```bash
+pip install -e ".[real]" && python scripts/fetch_datasets.py
+python -m agentq run real_calibration --mode full --out results/real
+python -m agentq run real_validation  --mode full --out results/real
+python -m agentq run real_arrival_traces --mode full --out results/real
+python -m agentq run real_validation_mooncake --mode full --out results/real
+python -m agentq run real_fanout --mode full --out results/real
+python -m agentq run real_multiagent --mode full --out results/real
+python -m agentq run real_swegym --mode full --out results/real
+python -m agentq run real_validation_swegym --mode full --out results/real
+python -m agentq run real_burstgpt --mode full --out results/real
+python -m agentq run real_mast --mode full --out results/real
+python -m agentq run real_azure2024 --mode full --out results/real
+```
+
+Main findings: the calibrated model predicts **mean latency within ±15%** of a replay of the real
+trajectories. It **overestimates p99 by 12–146%** because real step counts are far less variable
+than geometric. Under real arrivals the outcome depends on the trace. With the Mooncake
+tool/agent trace (FAST 2025) the mean stays within ±11% up to `rho_L = 0.8`. With the Azure trace,
+whose rate surges overload the pool, latency is **underestimated roughly tenfold at `rho_L >= 0.8`**. Agent re-planning failures cluster (AgentInstruct), while code-execution failures do not (Who&When, ICML 2025). Real tool fan-out is neither Poisson nor fixed (97% of queries make one call), but with it the fork-join error stays within 4.5% p99 when the measured `E[K^2]/E[K]` is used. Real orchestrator delegation is a one-level star, not the Galton-Watson tree the model assumes, and failed runs continue for about half their length after the decisive error. On SWE-Gym the model's cost per success (Eq. 8) is 4-14x too low, because 78% of LLM calls go to silently failed runs, but its latency of successful GPT-4o runs is within about 15% up to `rho_L = 0.8`. Over 171 days of single-customer BurstGPT traffic, more than 80% of hours contain a 5-minute rate surge above 1.25x the hour's mean (high-volume Azure 2024 services are far smoother within the hour), failures come in outage episodes, and measured GPT-4 response times match the assumed token latency model (decode 24-31 vs 25 ms/token). On measured end-to-end latency of real multi-agent runs (MAST, zero load), real frameworks run fixed-length pipelines. The geometric step law overestimates p99 by 64-214%, while the model's composition with the observed step-count law is within 10% in 5 of 7 groups. Across 14 real hours of Azure 2024 traffic, the stationary model is accurate (mean within 6%) whenever target utilization times the hour's peak-minute rate ratio stays below about 0.95 (Spearman -0.90 with p99 error). Replacing the geometric step law with the empirical one (`WorkflowConfig.step_pmf`) cuts the p99 error on real AgentInstruct trajectories at `rho_L <= 0.8` from +33..+145% to -26..+6%, and on measured MetaGPT latency to within 5% for GPT-4o and Claude. LLM service times
+derive from real token counts through an assumed latency model, and tool times are assumed. See
+[docs/real_data.md](docs/real_data.md) for the full results and limitations.
 
 ---
 

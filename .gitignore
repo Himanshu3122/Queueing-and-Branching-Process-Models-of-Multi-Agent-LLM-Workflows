@@ -15,6 +15,8 @@ htmlcov/
 # local experiment outputs (results/full and results/paper_reported are tracked)
 results/smoke/
 results/scratch/
+# downloaded public datasets (fetched by scripts/fetch_datasets.py, not redistributed)
+data/
 *.log
 .DS_Store
 .idea/

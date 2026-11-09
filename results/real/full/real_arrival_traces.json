@@ -1,0 +1,332 @@
+{
+ "experiment": "real_arrival_traces",
+ "mode": "full",
+ "created_utc": "2026-11-09T09:00:30+00:00",
+ "elapsed_seconds": 1.86,
+ "params": {
+  "grid": {
+   "dt": 0.02,
+   "n": 30000
+  },
+  "latency": {
+   "overhead_s": 0.25,
+   "prefill_ms_per_token": 0.2,
+   "decode_ms_per_token": 25.0
+  },
+  "seed": 0,
+  "arrivals": {
+   "azure_conv": {
+    "kind": "azure",
+    "path": "data/raw/azure/AzureLLMInferenceTrace_conv.csv"
+   },
+   "mooncake_toolagent": {
+    "kind": "mooncake",
+    "path": "data/raw/mooncake/toolagent_trace.jsonl"
+   },
+   "mooncake_conversation": {
+    "kind": "mooncake",
+    "path": "data/raw/mooncake/conversation_trace.jsonl"
+   }
+  }
+ },
+ "environment": {
+  "agentq": "1.0.0",
+  "python": "3.12.15",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 181 Stepping 0, GenuineIntel"
+ },
+ "provenance": "reproduced locally with agentq (not the paper's original output files)",
+ "results": {
+  "latency_model": {
+   "overhead_s": 0.25,
+   "prefill_ms_per_token": 0.2,
+   "decode_ms_per_token": 25.0
+  },
+  "traces": {
+   "azure_conv": {
+    "spec": {
+     "kind": "azure",
+     "path": "data/raw/azure/AzureLLMInferenceTrace_conv.csv"
+    },
+    "arrivals": {
+     "n_arrivals": 19366,
+     "duration_s": 3501.721937,
+     "mean_rate": 5.5301364152832795,
+     "interarrival_scv": 1.1972079491680079,
+     "interarrival_lag1_corr": 0.062332139487712795,
+     "index_of_dispersion": {
+      "1.0": 1.3851418849785946,
+      "10.0": 3.856995898132027,
+      "60.0": 16.128259128235047,
+      "300.0": 56.09518130004204
+     }
+    },
+    "rate_surges": {
+     "factor": 1.25,
+     "windows": {
+      "60.0": {
+       "peak_to_mean": 1.5279912402607796,
+       "fraction_above": 0.1724137931034483
+      },
+      "300.0": {
+       "peak_to_mean": 1.3495749060922624,
+       "fraction_above": 0.18181818181818182
+      }
+     }
+    },
+    "poisson_reference": {
+     "n_arrivals": 19366,
+     "duration_s": 3480.3236206677384,
+     "mean_rate": 5.564137738514274,
+     "interarrival_scv": 1.0000067378914392,
+     "interarrival_lag1_corr": -0.00327559572813897,
+     "index_of_dispersion": {
+      "1.0": 0.9985324111338258,
+      "10.0": 0.9640475155935769,
+      "60.0": 0.8370634451417133,
+      "300.0": 1.3184169492364428
+     }
+    },
+    "input_tokens": {
+     "mean": 1154.6974078281523,
+     "cv": 0.9602463195346387,
+     "p50": 1020.0,
+     "p99": 4142.0
+    },
+    "output_tokens": {
+     "mean": 211.12594237323142,
+     "cv": 0.771417626541808,
+     "p50": 129.0,
+     "p99": 601.0
+    },
+    "implied_llm_service": {
+     "mean": 5.759088040896417,
+     "cv": 0.7037115128131318,
+     "p50": 3.7032,
+     "p99": 15.47175999999999,
+     "aic_fits": [
+      {
+       "family": "lognormal",
+       "log_likelihood": -50362.088267289524,
+       "aic": 100728.17653457905,
+       "mean": 5.822837592559761,
+       "cv": 0.8412386930417184
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": -50745.97866541174,
+       "aic": 101495.95733082348,
+       "mean": 5.759088040896417,
+       "cv": 0.690013578363767
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -53271.588746606634,
+       "aic": 106545.17749321327,
+       "mean": 5.759088040896417,
+       "cv": 1.0
+      }
+     ]
+    }
+   },
+   "mooncake_toolagent": {
+    "spec": {
+     "kind": "mooncake",
+     "path": "data/raw/mooncake/toolagent_trace.jsonl"
+    },
+    "arrivals": {
+     "n_arrivals": 23608,
+     "duration_s": 3539.824,
+     "mean_rate": 6.668975632686823,
+     "interarrival_scv": 0.09006107839727799,
+     "interarrival_lag1_corr": 0.9676738666564823,
+     "index_of_dispersion": {
+      "1.0": 0.5123944721520263,
+      "10.0": 2.0265223347054047,
+      "60.0": 3.7682220250278324,
+      "300.0": 10.534248110470545
+     }
+    },
+    "rate_surges": {
+     "factor": 1.25,
+     "windows": {
+      "60.0": {
+       "peak_to_mean": 1.1570992445743495,
+       "fraction_above": 0.0
+      },
+      "300.0": {
+       "peak_to_mean": 1.0721286736984794,
+       "fraction_above": 0.0
+      }
+     }
+    },
+    "poisson_reference": {
+     "n_arrivals": 23608,
+     "duration_s": 3557.8562065166802,
+     "mean_rate": 6.635175406122564,
+     "interarrival_scv": 1.0050052541176466,
+     "interarrival_lag1_corr": -0.00222273345114413,
+     "index_of_dispersion": {
+      "1.0": 0.9723255446900193,
+      "10.0": 0.8981223050159607,
+      "60.0": 0.9241156618714796,
+      "300.0": 1.0292363636363635
+     }
+    },
+    "input_tokens": {
+     "mean": 8596.242121314808,
+     "cv": 1.279950558991213,
+     "p50": 6346.0,
+     "p99": 61660.78000000004
+    },
+    "output_tokens": {
+     "mean": 182.1338952897323,
+     "cv": 1.3302084259394493,
+     "p50": 30.0,
+     "p99": 897.9300000000003
+    },
+    "implied_llm_service": {
+     "mean": 6.522595806506271,
+     "cv": 1.0697134145580292,
+     "p50": 2.3276000000000003,
+     "p99": 28.655146000000013,
+     "aic_fits": [
+      {
+       "family": "lognormal",
+       "log_likelihood": -65652.00032855291,
+       "aic": 131308.00065710582,
+       "mean": 6.436490357345121,
+       "cv": 1.3117918076178168
+      },
+      {
+       "family": "gamma",
+       "log_likelihood": -67799.9765349618,
+       "aic": 135603.9530699236,
+       "mean": 6.522595806506271,
+       "cv": 0.9490559123856072
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -67879.43144571286,
+       "aic": 135760.86289142573,
+       "mean": 6.522595806506271,
+       "cv": 1.0
+      }
+     ]
+    },
+    "timestamp_resolution": {
+     "n_requests": 23608.0,
+     "distinct_timestamps": 1180.0,
+     "median_gap_between_distinct_ms": 3000.0,
+     "mean_requests_per_timestamp": 20.00677966101695
+    },
+    "session_linkage": {
+     "linked_fraction": 0.17214503558115893,
+     "median_gap_to_parent_s": 117.0010000000002,
+     "prefix_block_reuse_fraction": 0.5525077145424007,
+     "shared_system_blocks": 18.0
+    }
+   },
+   "mooncake_conversation": {
+    "spec": {
+     "kind": "mooncake",
+     "path": "data/raw/mooncake/conversation_trace.jsonl"
+    },
+    "arrivals": {
+     "n_arrivals": 12031,
+     "duration_s": 3539.634714285714,
+     "mean_rate": 3.3986557854254777,
+     "interarrival_scv": 0.1271898944885814,
+     "interarrival_lag1_corr": 0.9162587252600043,
+     "index_of_dispersion": {
+      "1.0": 0.3492091061558378,
+      "10.0": 1.357954895859448,
+      "60.0": 2.885015202264453,
+      "300.0": 7.332860358156376
+     }
+    },
+    "rate_surges": {
+     "factor": 1.25,
+     "windows": {
+      "60.0": {
+       "peak_to_mean": 1.2063592958080986,
+       "fraction_above": 0.0
+      },
+      "300.0": {
+       "peak_to_mean": 1.0925888256343268,
+       "fraction_above": 0.0
+      }
+     }
+    },
+    "poisson_reference": {
+     "n_arrivals": 12031,
+     "duration_s": 3564.742346596586,
+     "mean_rate": 3.3747179544366124,
+     "interarrival_scv": 1.0229276842635833,
+     "interarrival_lag1_corr": -0.006997499778997368,
+     "index_of_dispersion": {
+      "1.0": 1.028698655624717,
+      "10.0": 1.1122976167883998,
+      "60.0": 1.111083075937363,
+      "300.0": 1.3072979911169065
+     }
+    },
+    "input_tokens": {
+     "mean": 12035.061341534369,
+     "cv": 1.3128595196081803,
+     "p50": 6909.0,
+     "p99": 85400.4
+    },
+    "output_tokens": {
+     "mean": 342.6189011719724,
+     "cv": 0.7294052771379591,
+     "p50": 350.0,
+     "p99": 1118.5000000000036
+    },
+    "implied_llm_service": {
+     "mean": 11.222484797606185,
+     "cv": 0.6416805608738105,
+     "p50": 10.9828,
+     "p99": 34.540080000000096,
+     "aic_fits": [
+      {
+       "family": "gamma",
+       "log_likelihood": -39570.51039194192,
+       "aic": 79145.02078388384,
+       "mean": 11.222484797606185,
+       "cv": 0.6917807881560337
+      },
+      {
+       "family": "lognormal",
+       "log_likelihood": -40799.21579855065,
+       "aic": 81602.4315971013,
+       "mean": 12.224570070391508,
+       "cv": 0.9938449239071925
+      },
+      {
+       "family": "exponential",
+       "log_likelihood": -41120.987543901865,
+       "aic": 82243.97508780373,
+       "mean": 11.222484797606185,
+       "cv": 1.0
+      }
+     ]
+    },
+    "timestamp_resolution": {
+     "n_requests": 12031.0,
+     "distinct_timestamps": 1180.0,
+     "median_gap_between_distinct_ms": 3000.0,
+     "mean_requests_per_timestamp": 10.195762711864408
+    },
+    "session_linkage": {
+     "linked_fraction": 0.3303964757709251,
+     "median_gap_to_parent_s": 125.9989999999998,
+     "prefix_block_reuse_fraction": 0.3664124783362218,
+     "shared_system_blocks": 1.0
+    }
+   }
+  }
+ }
+}

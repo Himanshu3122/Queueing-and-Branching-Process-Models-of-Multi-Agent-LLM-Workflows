@@ -1,0 +1,228 @@
+{
+ "experiment": "real_multiagent",
+ "mode": "full",
+ "created_utc": "2026-11-09T09:29:21+00:00",
+ "elapsed_seconds": 5.74,
+ "params": {
+  "grid": {
+   "dt": 0.02,
+   "n": 30000
+  },
+  "whowhen_dir": "data/raw/whowhen"
+ },
+ "environment": {
+  "agentq": "1.0.0",
+  "python": "3.12.15",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 181 Stepping 0, GenuineIntel"
+ },
+ "provenance": "reproduced locally with agentq (not the paper's original output files)",
+ "results": {
+  "n_runs": {
+   "Algorithm-Generated": 126,
+   "Hand-Crafted": 58
+  },
+  "all_runs_failed": true,
+  "tool_failures_captainagent": {
+   "executions": 236,
+   "runs_with_executions": 101,
+   "failure": {
+    "rate": 0.3813559322033898,
+    "n": 236,
+    "ci95": [
+     0.32175565522364374,
+     0.44475677235579353
+    ]
+   },
+   "fail_after_fail": {
+    "rate": 0.26666666666666666,
+    "n": 60,
+    "ci95": [
+     0.17132639941674732,
+     0.3900871319992253
+    ]
+   },
+   "fail_after_success": {
+    "rate": 0.30666666666666664,
+    "n": 75,
+    "ci95": [
+     0.21386867023563605,
+     0.41830454914044746
+    ]
+   },
+   "fisher_odds_ratio": 0.8221343873517787,
+   "fisher_pvalue": 0.7033871189484515
+  },
+  "delegation_magentic_one": {
+   "runs": 58,
+   "delegations_per_task": {
+    "mean": 11.879310344827585,
+    "var": 90.38868723532968,
+    "dispersion_index": 7.608917067705547,
+    "min": 0,
+    "max": 30
+   },
+   "targets": {
+    "WebSurfer": 602,
+    "Assistant": 41,
+    "FileSurfer": 36,
+    "ComputerTerminal": 10
+   },
+   "subagent_turns_per_delegation": {
+    "1": 652
+   },
+   "max_depth": 1,
+   "tree_size": {
+    "mean": 12.879310344827585,
+    "var": 90.38868723532968,
+    "p50": 9.0,
+    "p99": 31.0
+   },
+   "galton_watson_estimate": {
+    "m_hat": 0.9223560910307899,
+    "m_se": 0.15097246095837488,
+    "n": 747.0,
+    "expected_tree_size": 12.879310344827593,
+    "tree_size_relative_se": 1.9444211782052776
+   },
+   "galton_watson_implied_tree_size": {
+    "mean": 12.879310344827593,
+    "var": 1970.5000256263097,
+    "p50": 2,
+    "p99": 199,
+    "p_size_1": 0.39758119920048446
+   },
+   "real_p_size_1": 0.017241379310344827
+  },
+  "decisive_errors": {
+   "Algorithm-Generated": {
+    "decisive_error_position": {
+     "p25": 0.1111111111111111,
+     "p50": 0.3333333333333333,
+     "p75": 0.5555555555555556
+    },
+    "fraction_of_agent_turns_after_error": {
+     "mean": 0.5046390778533636,
+     "p50": 0.5
+    },
+    "agent_turns_per_run": {
+     "mean": 6.317460317460317,
+     "var": 1.882412698412698,
+     "max": 10
+    },
+    "mistake_agents": {
+     "Verification_Expert": 18,
+     "PythonDebugging_Expert": 7,
+     "DataAnalysis_Expert": 6,
+     "Validation_Expert": 5,
+     "DataVerification_Expert": 5,
+     "WebServing_Expert": 4,
+     "Statistics_Expert": 2,
+     "Geometry_Expert": 2,
+     "Research_Expert": 2,
+     "DataExtraction_Expert": 2,
+     "VideoContentAnalysis_Expert": 2,
+     "Excel_Expert": 1,
+     "Movie_Expert": 1,
+     "Tickets_Pricing_Expert": 1,
+     "Filmography_Expert": 1,
+     "Corporate_Governance_Expert": 1,
+     "InformationVerification_Expert": 1,
+     "HistoricalWeatherData_Expert": 1,
+     "Reviews_Expert": 1,
+     "JSON_Expert": 1,
+     "Vegan_Food_Expert": 1,
+     "Debugging_Expert": 1,
+     "BingAPI_Expert": 1,
+     "Paintball_Expert": 1,
+     "MartialArts_Expert": 1,
+     "CorporateHistory_IPOs_MondayCom_Expert": 1,
+     "ArtHistory_Expert": 1,
+     "Culinary_Awards_Expert": 1,
+     "Boggle_Board_Expert": 1,
+     "Narration_Expert": 1,
+     "Poetry_Expert": 1,
+     "Debugging_Problem_Solving_Expert": 1,
+     "Lyrics_Expert": 1,
+     "Church_Historian_Expert": 1,
+     "ModelEvaluation_Interpretation_Expert": 1,
+     "WomenInComputerScienceHistory_Expert": 1,
+     "Culinary_Expert": 1,
+     "SpeciesSightingsData_Expert": 1,
+     "InformationExtraction_Expert": 1,
+     "Locomotive_Expert": 1,
+     "ProblemSolving_Expert": 1,
+     "Cubing_Expert": 1,
+     "Polish_TV_Series_Expert": 1,
+     "GIS_DataAnalysis_Expert": 1,
+     "HawaiiRealEstate_Expert": 1,
+     "Tizin_Translation_Expert": 1,
+     "WebDevelopment_Expert": 1,
+     "PublicationData_Expert": 1,
+     "Behavioral_Expert": 1,
+     "Mesopotamian_Number_Systems_Expert": 1,
+     "ISBNCheckDigit_Expert": 1,
+     "Clinical_Trial_Data_Analysis_Expert": 1,
+     "TextExtraction_Expert": 1,
+     "Literary_Analysis_Expert": 1,
+     "PythonProgramming_Expert": 1,
+     "MusicTheory_Expert": 1,
+     "MilitaryHistory_Expert": 1,
+     "BiblicalScholar_Expert": 1,
+     "ScientificPaperAnalysis_Expert": 1,
+     "API_Expert": 1,
+     "VideoAnalysis_Expert": 1,
+     "MerriamWebsterWordOfTheDay_Historian_Expert": 1,
+     "Data_Collection_Expert": 1,
+     "YouTubeDownload_Expert": 1,
+     "Neurology_Expert": 1,
+     "WaybackMachine_Expert": 1,
+     "AlgorithmDesign_Expert": 1,
+     "Marathon_Expert": 1,
+     "Chess_Expert": 1,
+     "BenAndJerrysFlavors_Expert": 1,
+     "Library_Database_Expert": 1,
+     "Music_Critic_Expert": 1,
+     "FinancialData_Expert": 1,
+     "GameTheory_Expert": 1,
+     "Federico_Lauria_Expert": 1,
+     "Blu-Ray_Expert": 1,
+     "FilmCritic_Expert": 1,
+     "AnimalBehavior_Expert": 1,
+     "AcademicPublication_Expert": 1,
+     "Data_Retrieval_Expert": 1,
+     "WikipediaHistory_Expert": 1,
+     "Probability_Expert": 1
+    }
+   },
+   "Hand-Crafted": {
+    "decisive_error_position": {
+     "p25": 0.1769464105156724,
+     "p50": 0.3405797101449275,
+     "p75": 0.7670454545454546
+    },
+    "fraction_of_agent_turns_after_error": {
+     "mean": 0.5402173886491665,
+     "p50": 0.6594202898550725
+    },
+    "agent_turns_per_run": {
+     "mean": 50.60344827586207,
+     "var": 1633.506654567453,
+     "max": 129
+    },
+    "mistake_agents": {
+     "WebSurfer": 33,
+     "Orchestrator": 18,
+     "Assistant": 4,
+     "FileSurfer": 3
+    }
+   }
+  },
+  "notes": [
+   "Algorithm-Generated histories are truncated at 10 messages; run lengths there are not natural.",
+   "All runs failed the task, so success-conditioned quantities are not identifiable."
+  ]
+ }
+}

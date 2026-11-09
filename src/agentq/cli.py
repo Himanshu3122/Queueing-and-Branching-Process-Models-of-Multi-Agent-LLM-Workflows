@@ -11,8 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from agentq.config import SystemConfig, load_profiles
-from agentq.experiments.paper import EXPERIMENTS
-from agentq.experiments.runner import MODES, run_all, run_experiment
+from agentq.experiments.runner import ALL_EXPERIMENTS, MODES, run_all, run_experiment
 from agentq.grid import Grid
 from agentq.model import ModelOptions, predict
 from agentq.planning import max_rate_for_p99
@@ -152,8 +151,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--derating", type=float, default=0.85)
     p.set_defaults(func=cmd_capacity)
 
-    p = sub.add_parser("run", help="run a paper experiment")
-    p.add_argument("experiment", choices=[*EXPERIMENTS, "all"])
+    p = sub.add_parser("run", help="run a paper or real-data experiment ('all' = paper experiments)")
+    p.add_argument("experiment", choices=[*ALL_EXPERIMENTS, "all"])
     p.add_argument("--mode", choices=MODES, default="smoke")
     p.add_argument("--config", default=DEFAULT_EXPERIMENTS)
     p.add_argument("--profiles", default=DEFAULT_PROFILES)

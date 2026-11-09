@@ -85,6 +85,7 @@ def simulate_chain(
     llm, tool = Station(system.llm, rng), Station(system.tool, rng)
     wf = system.workflow
     p, r_max, q = wf.failure_prob, wf.max_retries, wf.q
+    step_pmf = None if wf.step_pmf is None else np.asarray(wf.step_pmf)  # geometric draws when None (paper)
     poisson_fan = wf.fanout_kind == "poisson"
 
     events: list[tuple[float, int, str, int]] = []
@@ -145,7 +146,8 @@ def simulate_chain(
     while events:
         now, _, kind, job = heapq.heappop(events)
         if kind == "arr":
-            tasks[job] = [now, float(rng.geometric(q)), 0, 0]
+            n_steps = rng.geometric(q) if step_pmf is None else rng.choice(step_pmf.size, p=step_pmf) + 1
+            tasks[job] = [now, float(n_steps), 0, 0]
             start_attempt(now, job)
         elif kind == "llm_done":
             release(llm, now)

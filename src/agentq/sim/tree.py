@@ -52,6 +52,8 @@ def simulate_tree(
     arr = poisson_arrivals(rng, tree_rate, n_trees)
     llm, tool = Station(system.llm, rng), Station(system.tool, rng)
     wf = system.workflow
+    if wf.step_pmf is not None:
+        raise NotImplementedError("the tree simulator supports only the geometric step-count law")
     p, r_max, q, m = wf.failure_prob, wf.max_retries, wf.q, delegation_mean
     poisson_fan = wf.fanout_kind == "poisson"
 

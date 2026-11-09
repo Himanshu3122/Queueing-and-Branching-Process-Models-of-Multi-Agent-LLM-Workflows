@@ -139,3 +139,205 @@ experiments:
     common: {rate: 0.1, step_tail_tol: 1.0e-10}
     full: {mean_steps: [2, 4, 8, 12, 16], n_tasks: 30000, seeds: 8}
     smoke: {mean_steps: [2, 8], n_tasks: 1500, seeds: 2}
+
+  # ---- Real-data experiments (not in the paper). Need `python scripts/fetch_datasets.py` first.
+  # ---- Workflow: AgentInstruct GPT-4 trajectories (measured steps, failures, tool calls, tokens).
+  # ---- Arrivals: Azure LLM inference trace 2023, conversation (measured timestamps).
+  # ---- ASSUMED: token -> LLM latency coefficients, tool service times, pool sizes (see docs/real_data.md).
+  real_calibration:                # parameter estimates and assumption tests per environment
+    common:
+      agentinstruct_dir: data/raw/agentinstruct
+      azure_csv: data/raw/azure/AzureLLMInferenceTrace_conv.csv
+      envs: [os, db, alfworld, webshop, kg, mixed]
+      latency: {overhead_s: 0.25, prefill_ms_per_token: 0.2, decode_ms_per_token: 25.0}
+      llm_servers: 8
+      tool: {servers: 16, mean_service: 1.0, cv: 1.5}
+      seed: 0
+    full: {}
+    smoke: {envs: [db, kg]}
+
+  real_validation:                 # calibrated model vs replay of real trajectories (Poisson / Azure arrivals)
+    common:
+      agentinstruct_dir: data/raw/agentinstruct
+      azure_csv: data/raw/azure/AzureLLMInferenceTrace_conv.csv
+      latency: {overhead_s: 0.25, prefill_ms_per_token: 0.2, decode_ms_per_token: 25.0}
+      llm_servers: 8
+      tool: {servers: 16, mean_service: 1.0, cv: 1.5}
+      model: {step_tail_tol: 1.0e-10, fold_tail: true}
+      spread: ci
+    full:
+      envs: [os, db, alfworld, webshop, kg, mixed]
+      rho_llm: [0.3, 0.5, 0.7, 0.8, 0.9]
+      n_tasks: 19366              # = length of the Azure trace (one hour, every request used once)
+      seeds: 4
+      sensitivity:                 # decode-speed sensitivity of the assumed latency model at rho_L = 0.8
+        rho_llm: 0.8
+        envs: [kg, mixed]
+        latency:
+          decode_12.5ms: {decode_ms_per_token: 12.5}
+          decode_50ms: {decode_ms_per_token: 50.0}
+    smoke: {envs: [db], rho_llm: [0.5], n_tasks: 1500, seeds: 2}
+
+  # ---- Mooncake (Qin et al., FAST 2025): real tool/agent and conversation arrivals from Kimi.
+  # ---- Timestamps are binned to 3 s slots; requests are spread evenly within each slot.
+  real_arrival_traces:             # burstiness, rate surges, token lengths of all real arrival traces
+    common:
+      latency: {overhead_s: 0.25, prefill_ms_per_token: 0.2, decode_ms_per_token: 25.0}
+      seed: 0
+      arrivals:
+        azure_conv: {kind: azure, path: data/raw/azure/AzureLLMInferenceTrace_conv.csv}
+        mooncake_toolagent: {kind: mooncake, path: data/raw/mooncake/toolagent_trace.jsonl}
+        mooncake_conversation: {kind: mooncake, path: data/raw/mooncake/conversation_trace.jsonl}
+    full: {}
+    smoke: {}
+
+  real_validation_mooncake:        # as real_validation, with Mooncake arrivals instead of Azure
+    common:
+      agentinstruct_dir: data/raw/agentinstruct
+      latency: {overhead_s: 0.25, prefill_ms_per_token: 0.2, decode_ms_per_token: 25.0}
+      llm_servers: 8
+      tool: {servers: 16, mean_service: 1.0, cv: 1.5}
+      model: {step_tail_tol: 1.0e-10, fold_tail: true}
+      spread: ci
+      model_sim: false             # model-assumption simulation is in real_validation
+      arrivals:
+        mooncake_toolagent: {kind: mooncake, path: data/raw/mooncake/toolagent_trace.jsonl}
+        mooncake_conversation: {kind: mooncake, path: data/raw/mooncake/conversation_trace.jsonl}
+    full:
+      envs: [os, db, alfworld, webshop, kg, mixed]
+      rho_llm: [0.3, 0.5, 0.7, 0.8, 0.9]
+      n_tasks: 12031              # conversation trace: whole hour; tool-agent: ~30 min window, rotated per seed
+      seeds: 4
+    smoke: {envs: [db], rho_llm: [0.8], n_tasks: 1500, seeds: 2}
+
+  # ---- BFCL (Patil et al., ICML 2025): real tool fan-out law from BFCL-Live user queries.
+  real_fanout:                     # fork-join error under the measured fan-out pmf (all else model-assumed)
+    common:
+      bfcl_dir: data/raw/bfcl
+      profile: P3
+      model: {step_tail_tol: 1.0e-10, fold_tail: true}
+      spread: ci
+      regimes:
+        llm_bound: {llm_servers: 8, tool_servers: 16}
+        tool_bound: {llm_servers: 32, tool_to_llm: 1.25}
+    full: {utilization: [0.5, 0.7, 0.8, 0.9], n_tasks: 30000, seeds: 4}
+    smoke: {utilization: [0.8], n_tasks: 1500, seeds: 2}
+
+  # ---- Who&When (Zhang et al., ICML 2025): failed multi-agent runs with annotated decisive errors.
+  real_multiagent:                 # failure clustering, delegation tree vs Galton-Watson, error position
+    common: {whowhen_dir: data/raw/whowhen}
+    full: {}
+    smoke: {}
+
+  # ---- SWE-Gym (Pan et al., ICML 2025): 6,055 OpenHands runs on real GitHub issues, both outcomes.
+  real_swegym:                     # outcome mix, failure modes, cost per success vs Eq. (8)
+    common: {swegym_dir: data/raw/swegym, swegym_records: data/processed/swegym_records.jsonl.gz}
+    full: {}
+    smoke: {}
+
+  real_validation_swegym:          # calibrated model vs replay of SWE-Gym runs (latency of resolved runs)
+    common:
+      swegym_records: data/processed/swegym_records.jsonl.gz
+      latency: {overhead_s: 0.25, prefill_ms_per_token: 0.2, decode_ms_per_token: 25.0}
+      llm_servers: 8
+      tool: {servers: 16, mean_service: 1.0, cv: 1.5}
+      model: {step_tail_tol: 1.0e-10, fold_tail: true}
+      grid: {dt: 0.1, n: 30000}    # 3000 s horizon: coding runs last minutes
+      spread: ci
+      arrivals:
+        mooncake_toolagent: {kind: mooncake, path: data/raw/mooncake/toolagent_trace.jsonl}
+        azure: {kind: azure, path: data/raw/azure/AzureLLMInferenceTrace_conv.csv}
+    full: {envs: [all, gpt-4o, claude], rho_llm: [0.5, 0.7, 0.8, 0.9], n_tasks: 12031, seeds: 3}
+    smoke: {envs: [claude], rho_llm: [0.7], n_tasks: 1500, seeds: 2}
+
+  # ---- BurstGPT (Wang et al., KDD 2025): Azure OpenAI GPT traffic, 61 + 110 days.
+  real_burstgpt:                   # surges over months, p(load), measured latency vs token model, sessions
+    common:
+      latency: {overhead_s: 0.25, prefill_ms_per_token: 0.2, decode_ms_per_token: 25.0}   # the assumed model, for comparison
+      files:
+        part1_61d: data/raw/burstgpt/BurstGPT_1.csv
+        part3_110d: data/raw/burstgpt/BurstGPT_3.csv
+    full: {}
+    smoke: {files: {part1_61d: data/raw/burstgpt/BurstGPT_1.csv}}
+
+  # ---- MAST (Cemri et al., NeurIPS 2025): measured step timings of real multi-agent runs (zero load).
+  real_mast:                       # measured end-to-end latency vs model, step-time dependence, failure modes
+    common:
+      mast_file: data/raw/mast/MAD_full_dataset.json
+      latency_frameworks: [ChatDev, MetaGPT]   # OpenManus runs are censored at 900 s
+      grid: {dt: 0.5, n: 40000}    # 20,000 s horizon: some ChatDev runs take an hour
+      model: {step_tail_tol: 1.0e-10, fold_tail: true}
+      min_runs: 30
+    full: {mc_runs: 200000}
+    smoke: {mc_runs: 5000}
+
+  # ---- Azure LLM inference trace 2024 (Stojkovic et al., HPCA 2025, DynamoLLM): one week, two services.
+  real_azure2024:                  # week-long burstiness; does the hourly surge index predict model error?
+    common:
+      files:
+        code: data/raw/azure2024/AzureLLMInferenceTrace_code_1week.csv
+        conversation: data/raw/azure2024/AzureLLMInferenceTrace_conv_1week.csv
+      cache_dir: data/processed/azure2024
+      workload: mixed
+      agentinstruct_dir: data/raw/agentinstruct
+      latency: {overhead_s: 0.25, prefill_ms_per_token: 0.2, decode_ms_per_token: 25.0}
+      llm_servers: 8
+      tool: {servers: 16, mean_service: 1.0, cv: 1.5}
+      model: {step_tail_tol: 1.0e-10, fold_tail: true}
+      spread: ci
+      quantiles: [0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0]   # hours chosen across the surge-index range
+    full: {rho_llm: [0.7, 0.8], n_tasks: 12031, seeds: 3}
+    smoke: {quantiles: [0.0, 1.0], rho_llm: [0.8], n_tasks: 1500, seeds: 2}
+
+  # ---- Route B: the same validations with the empirical step-count law (WorkflowConfig.step_pmf)
+  # ---- in place of the geometric one. Compare with the geometric-law results of the same names.
+  real_validation_empirical:       # = real_validation (AgentInstruct; Poisson and Azure 2023 arrivals)
+    common:
+      step_law: empirical
+      agentinstruct_dir: data/raw/agentinstruct
+      azure_csv: data/raw/azure/AzureLLMInferenceTrace_conv.csv
+      latency: {overhead_s: 0.25, prefill_ms_per_token: 0.2, decode_ms_per_token: 25.0}
+      llm_servers: 8
+      tool: {servers: 16, mean_service: 1.0, cv: 1.5}
+      model: {step_tail_tol: 1.0e-10, fold_tail: true}
+      spread: ci
+    full:
+      envs: [os, db, alfworld, webshop, kg, mixed]
+      rho_llm: [0.3, 0.5, 0.7, 0.8, 0.9]
+      n_tasks: 19366
+      seeds: 4
+    smoke: {envs: [kg], rho_llm: [0.5], n_tasks: 1500, seeds: 2}
+
+  real_validation_swegym_empirical:  # = real_validation_swegym with the empirical step law
+    common:
+      step_law: empirical
+      swegym_records: data/processed/swegym_records.jsonl.gz
+      latency: {overhead_s: 0.25, prefill_ms_per_token: 0.2, decode_ms_per_token: 25.0}
+      llm_servers: 8
+      tool: {servers: 16, mean_service: 1.0, cv: 1.5}
+      model: {step_tail_tol: 1.0e-10, fold_tail: true}
+      grid: {dt: 0.1, n: 30000}
+      spread: ci
+      arrivals:
+        mooncake_toolagent: {kind: mooncake, path: data/raw/mooncake/toolagent_trace.jsonl}
+        azure: {kind: azure, path: data/raw/azure/AzureLLMInferenceTrace_conv.csv}
+    full: {envs: [all, gpt-4o, claude], rho_llm: [0.5, 0.7, 0.8, 0.9], n_tasks: 12031, seeds: 3}
+    smoke: {envs: [claude], rho_llm: [0.7], n_tasks: 1500, seeds: 2}
+
+  real_azure2024_empirical:        # = real_azure2024 (planning rule) with the empirical step law
+    common:
+      step_law: empirical
+      files:
+        code: data/raw/azure2024/AzureLLMInferenceTrace_code_1week.csv
+        conversation: data/raw/azure2024/AzureLLMInferenceTrace_conv_1week.csv
+      cache_dir: data/processed/azure2024
+      workload: mixed
+      agentinstruct_dir: data/raw/agentinstruct
+      latency: {overhead_s: 0.25, prefill_ms_per_token: 0.2, decode_ms_per_token: 25.0}
+      llm_servers: 8
+      tool: {servers: 16, mean_service: 1.0, cv: 1.5}
+      model: {step_tail_tol: 1.0e-10, fold_tail: true}
+      spread: ci
+      quantiles: [0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0]
+    full: {rho_llm: [0.7, 0.8], n_tasks: 12031, seeds: 3}
+    smoke: {quantiles: [0.0, 1.0], rho_llm: [0.8], n_tasks: 1500, seeds: 2}
